@@ -96,9 +96,9 @@ END;
 GO
 
 -- Procedimiento para renovar membresía
-
 CREATE PROCEDURE sp_RenovarMembresia
     @cedula_cliente VARCHAR(11),
+    @fecha_renovacion Date,
     @metodo_pago VARCHAR(50) = 'Efectivo'
 AS
 BEGIN
@@ -165,8 +165,8 @@ BEGIN
         END
 
         -- Crear nuevo pago
-        INSERT INTO Pago (monto, id_membresia, id_estado, id_metodo_pago)
-        VALUES (@precio, @id_membresia_actual, 1, @id_metodo_pago);
+        INSERT INTO Pago (monto, id_membresia, id_estado, id_metodo_pago, fecha_pago)
+        VALUES (@precio, @id_membresia_actual, 1, @id_metodo_pago, @fecha_renovacion);
 
         COMMIT TRANSACTION;
 
