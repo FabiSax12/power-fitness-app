@@ -61,7 +61,7 @@ BEGIN
                 SET @telefono = LTRIM(RTRIM(SUBSTRING(@telefonos, @pos, @next_comma - @pos)));
 
                 -- Verificar si el teléfono ya existe
-                SELECT @id_telefono = id_permiso FROM Telefono WHERE numero_telefono = @telefono;
+                SELECT @id_telefono = id_telefono FROM Telefono WHERE numero_telefono = @telefono;
 
                 IF @id_telefono IS NULL
                 BEGIN
@@ -169,7 +169,7 @@ BEGIN
 
                 SET @telefono = LTRIM(RTRIM(SUBSTRING(@telefonos, @pos, @next_comma - @pos)));
 
-                SELECT @id_telefono = id_permiso FROM Telefono WHERE numero_telefono = @telefono;
+                SELECT @id_telefono = id_telefono FROM Telefono WHERE numero_telefono = @telefono;
 
                 IF @id_telefono IS NULL
                 BEGIN
@@ -219,7 +219,7 @@ BEGIN
         STUFF((
             SELECT ', ' + t.numero_telefono
             FROM Telefono_Persona tp
-            INNER JOIN Telefono t ON tp.id_telefono = t.id_permiso
+            INNER JOIN Telefono t ON tp.id_telefono = t.id_telefono
             WHERE tp.cedula_persona = p.cedula
             FOR XML PATH('')
         ), 1, 2, '') AS telefonos,
