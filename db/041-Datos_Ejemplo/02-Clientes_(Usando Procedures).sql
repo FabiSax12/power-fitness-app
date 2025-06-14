@@ -43,16 +43,16 @@ EXEC sp_InsertarCliente
 
 EXEC sp_InsertarCliente
     @cedula = '3-0234-0567',
-    @nombre = 'Gabriela',
-    @apellido1 = 'Hernández',
-    @apellido2 = 'Castro',
-    @genero_nombre = 'Femenino',
-    @contrasena = 'GabiHern456',
-    @correo = 'gaby.hernandez@outlook.com',
-    @fecha_nacimiento = '1985-02-14',
-    @telefonos = '86789012,22334455',
+    @nombre = 'Fabián',
+    @apellido1 = 'Vargas',
+    @apellido2 = 'Araya',
+    @genero_nombre = 'Masculino',
+    @contrasena = 'GymPW12*',
+    @correo = 'f.vargas.1@estudiantec.cr',
+    @fecha_nacimiento = '2005-02-12',
+    @telefonos = '85160370,24742757',
     @nivel_fitness = 'Intermedio',
-    @peso = 70.8;
+    @peso = 69.0;
 
 EXEC sp_InsertarCliente
     @cedula = '1-0678-0901',

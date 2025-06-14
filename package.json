@@ -1,0 +1,17 @@
+{
+  "name": "power-fitness-app",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build --parallel",
+    "start": "node apps/backend/dist/main.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.2.1",
+  "devDependencies": {
+    "turbo": "^2.5.4"
+  }
+}
