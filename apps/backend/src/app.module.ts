@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { AuthModule } from './modules/auth/auth.module';
 import { RutinasModule } from './modules/rutinas/rutinas.module';
 import { AdministrativosModule } from './modules/administrativos/administrativos.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -35,6 +36,8 @@ import { AdministrativosModule } from './modules/administrativos/administrativos
     RutinasModule,
 
     AdministrativosModule,
+
+    UsersModule,
   ],
   providers: [PowerFitnessDbService],
   exports: [PowerFitnessDbService],

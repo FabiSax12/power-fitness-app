@@ -8,6 +8,20 @@ export class PowerFitnessDbService {
 
   constructor(private readonly db: DatabaseService) { }
 
+  async allUsers() {
+    const admins = await this.db.executeQuery('SELECT * FROM Administrativo JOIN Persona ON Administrativo.cedula_administrativo = Persona.cedula');
+    const clients = await this.db.executeQuery('SELECT * FROM Cliente JOIN Persona ON Cliente.cedula_cliente = Persona.cedula');
+    const trainers = await this.db.executeQuery('SELECT * FROM Entrenador JOIN Persona ON Entrenador.cedula_entrenador = Persona.cedula');
+
+    return {
+      data: {
+        administrativos: admins.recordset,
+        clientes: clients.recordset,
+        entrenadores: trainers.recordset
+      }
+    }
+  }
+
   // ===== GESTIÓN DE ADMINISTRATIVOS =====
   async consultarAdministrativo(cedula?: string): Promise<QueryResult> {
     return await this.db.executeQuery(`
