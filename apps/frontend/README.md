@@ -21,11 +21,11 @@
 - [x] Read
 - [] Update
 - [x] Delete
-## 3. Membresias (Vista Admin)
-- [] Create
-- [] Read
-- [] Update
-- [] Delete
+## 3. Tipos Membresias (Vista Admin)
+- [x] Create
+- [x] Read
+- [x] Update
+- [x] Delete
 ## 4. Rutinas (Vista Entrenador)
 - [] Create
 - [] Read
