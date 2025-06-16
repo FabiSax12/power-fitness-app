@@ -123,9 +123,6 @@ importers:
 
   apps/frontend:
     dependencies:
-      '@faker-js/faker':
-        specifier: ^9.6.0
-        version: 9.8.0
       '@heroui/avatar':
         specifier: 2.2.17-beta.0
         version: 2.2.17-beta.0(@heroui/system@2.4.17-beta.0(@heroui/theme@2.4.17-beta.0(tailwindcss@4.1.8))(framer-motion@12.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@heroui/theme@2.4.17-beta.0(tailwindcss@4.1.8))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -216,27 +213,12 @@ importers:
       '@tanstack/router-plugin':
         specifier: ^1.114.3
         version: 1.120.15(@tanstack/react-router@1.120.15(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(vite@6.3.5(@types/node@20.17.57)(jiti@2.4.2)(lightningcss@1.30.1)(terser@5.40.0)(tsx@4.19.4))(webpack@5.97.1)
-      '@trpc/client':
-        specifier: ^11.3.1
-        version: 11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)
-      '@trpc/react-query':
-        specifier: ^11.3.1
-        version: 11.3.1(@tanstack/react-query@5.80.5(react@19.1.0))(@trpc/client@11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.3.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)
-      '@trpc/server':
-        specifier: ^11.3.1
-        version: 11.3.1(typescript@5.8.3)
-      cors:
-        specifier: ^2.8.5
-        version: 2.8.5
       framer-motion:
         specifier: ^12.18.1
         version: 12.18.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       lucide-react:
         specifier: ^0.513.0
         version: 0.513.0(react@19.1.0)
-      mssql:
-        specifier: ^11.0.1
-        version: 11.0.1
       react:
         specifier: ^19.1.0
         version: 19.1.0
@@ -265,9 +247,6 @@ importers:
       '@testing-library/react':
         specifier: ^16.2.0
         version: 16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/mssql':
-        specifier: ^9.1.7
-        version: 9.1.7
       '@types/react':
         specifier: ^19.0.8
         version: 19.1.6
@@ -780,10 +759,6 @@ packages:
   '@eslint/js@9.28.0':
     resolution: {integrity: sha512-fnqSjGWd/CoIp4EXIxWVK/sHA6DOHN4+8Ix2cX5ycOY7LG0UY8nHCU5pIp2eaE1Mc7Qd8kHspYNzYXT2ojPLzg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@faker-js/faker@9.8.0':
-    resolution: {integrity: sha512-U9wpuSrJC93jZBxx/Qq2wPjCuYISBueyVUGK7qqdmj7r/nxaxwW8AQDCLeRO7wZnjj94sh3p246cAYjUKuqgfg==}
-    engines: {node: '>=18.0.0', npm: '>=9.0.0'}
 
   '@formatjs/ecma402-abstract@2.3.4':
     resolution: {integrity: sha512-qrycXDeaORzIqNhBOx0btnhpD1c+/qFIHAN9znofuMJX6QBwtbrmlpWfD4oiUUD2vJUOIYFA/gYtg2KAMGG7sA==}
@@ -2523,27 +2498,6 @@ packages:
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
-
-  '@trpc/client@11.3.1':
-    resolution: {integrity: sha512-UlLsUN7x8qD07FaGzdz/FG3K+kpaYowZkmVZ8R4Nlx1Yj01Kgr1Y+cGjtBdRpd+0l7uVylwDPmHA1OxYE6zHgA==}
-    peerDependencies:
-      '@trpc/server': 11.3.1
-      typescript: '>=5.7.2'
-
-  '@trpc/react-query@11.3.1':
-    resolution: {integrity: sha512-hVo+W7bRLo6QhhuV369IvCo/Ut0HWkpSprA4N8zSkcXwCf7dZN3BH/neKlTprFPyZWsLNFjRlDhymzwpaYwLAQ==}
-    peerDependencies:
-      '@tanstack/react-query': ^5.80.3
-      '@trpc/client': 11.3.1
-      '@trpc/server': 11.3.1
-      react: '>=18.2.0'
-      react-dom: '>=18.2.0'
-      typescript: '>=5.7.2'
-
-  '@trpc/server@11.3.1':
-    resolution: {integrity: sha512-5Rjigjqwl9ieXL91ebZ1M4FPFXQJ5qipRyZuBoNzvqkq7Qlig+2F4WwLELyiTSNk2bGzdJTXJMKLhRE9Z56D8w==}
-    peerDependencies:
-      typescript: '>=5.7.2'
 
   '@tsconfig/node10@1.0.11':
     resolution: {integrity: sha512-DcRjDCujK/kCk/cUe8Xz8ZSpm8mS3mNNpta+jGCA6USEDfktlNvm1+IuZ9eTcDbNk41BHwpHHeW+N1lKCz4zOw==}
@@ -6645,8 +6599,6 @@ snapshots:
 
   '@eslint/js@9.28.0': {}
 
-  '@faker-js/faker@9.8.0': {}
-
   '@formatjs/ecma402-abstract@2.3.4':
     dependencies:
       '@formatjs/fast-memoize': 2.2.7
@@ -9238,24 +9190,6 @@ snapshots:
       - supports-color
 
   '@tokenizer/token@0.3.0': {}
-
-  '@trpc/client@11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)':
-    dependencies:
-      '@trpc/server': 11.3.1(typescript@5.8.3)
-      typescript: 5.8.3
-
-  '@trpc/react-query@11.3.1(@tanstack/react-query@5.80.5(react@19.1.0))(@trpc/client@11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3))(@trpc/server@11.3.1(typescript@5.8.3))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typescript@5.8.3)':
-    dependencies:
-      '@tanstack/react-query': 5.80.5(react@19.1.0)
-      '@trpc/client': 11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)
-      '@trpc/server': 11.3.1(typescript@5.8.3)
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-      typescript: 5.8.3
-
-  '@trpc/server@11.3.1(typescript@5.8.3)':
-    dependencies:
-      typescript: 5.8.3
 
   '@tsconfig/node10@1.0.11': {}
 

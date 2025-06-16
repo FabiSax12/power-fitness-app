@@ -107,6 +107,22 @@ export interface SP_RegistrarProgreso {
   };
 }
 
+export interface SP_InsertarEmpleado {
+  name: 'sp_InsertarEmpleado';
+  params: {
+    cedula: string;
+    nombre: string;
+    apellido1: string;
+    apellido2: string;
+    genero_nombre: 'Masculino' | 'Femenino';
+    contrasena: string;
+    correo: string;
+    fecha_nacimiento: Date;
+    id_cargo: number; // ID del cargo del empleado
+    telefonos?: string; // Lista separada por comas
+  };
+}
+
 export type Procedures =
   SP_Login
   | SP_AgregarEjercicioRutina
@@ -118,4 +134,5 @@ export type Procedures =
   | sp_RenovarMembresia
   | SP_CrearRutina
   | SP_ConsultarRutinas
-  | SP_RegistrarProgreso;
+  | SP_RegistrarProgreso
+  | SP_InsertarEmpleado;

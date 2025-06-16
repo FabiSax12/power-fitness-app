@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService, QueryResult } from './database.service';
-import { SP_AgregarEjercicioRutina, SP_CrearMembresia, SP_CrearRutina, SP_InsertarCliente, SP_RegistrarProgreso } from './procedures/availableProcedures';
+import { SP_AgregarEjercicioRutina, SP_CrearMembresia, SP_CrearRutina, SP_InsertarCliente, SP_InsertarEmpleado, SP_RegistrarProgreso } from './procedures/availableProcedures';
 
 @Injectable()
 export class PowerFitnessDbService {
@@ -185,6 +185,12 @@ export class PowerFitnessDbService {
 
     return await this.db.executeQuery(searchQuery, { query: `%${query}%` });
   }
+
+
+  async insertarEmpleado(empleadoData: SP_InsertarEmpleado['params']): Promise<QueryResult> {
+    return await this.db.executeProcedure({ name: 'sp_InsertarEmpleado', params: empleadoData });
+  }
+
 
   // ===== ESTADÍSTICAS RÁPIDAS =====
   async obtenerEstadisticasGenerales(): Promise<QueryResult> {

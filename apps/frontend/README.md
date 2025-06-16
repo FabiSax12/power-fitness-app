@@ -20,7 +20,7 @@
 - [] Create
 - [x] Read
 - [] Update
-- [] Delete
+- [x] Delete
 ## 3. Membresias (Vista Admin)
 - [] Create
 - [] Read
