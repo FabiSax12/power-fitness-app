@@ -1,13 +1,46 @@
--- Procedimiento para crear una persona completa (Cliente)
-
-CREATE PROCEDURE sp_InsertarCliente
-    @cedula VARCHAR(11),
+create procedure sp_validarDatosPersona
+    @cedula TCedula,
     @nombre VARCHAR(30),
     @apellido1 VARCHAR(30),
     @apellido2 VARCHAR(30),
     @genero_nombre VARCHAR(9), -- 'Masculino' o 'Femenino'
-    @contrasena VARCHAR(20),
-    @correo VARCHAR(50),
+    @contrasena TContrasena,
+    @correo TCorreo,
+    @fecha_nacimiento DATE
+as
+begin
+    set nocount on;
+    set xact_abort on;
+
+    IF LEN(TRIM(CONCAT(@cedula,''))) = 0
+        THROW 51020, N'La cédula es obligatoria.',1;
+    IF LEN(TRIM(CONCAT(@nombre,''))) = 0
+        THROW 51021, N'El nombre es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@apellido1,''))) = 0
+        THROW 51022, N'El primer apellido es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@apellido2,''))) = 0
+        THROW 51023, N'El segundo apellido es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@genero_nombre,''))) = 0
+        THROW 51024, N'El género es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@contrasena,''))) = 0
+        THROW 51025, N'La contraseña es obligatoria.',1;
+    IF LEN(TRIM(CONCAT(@correo,''))) = 0
+        THROW 51026, N'El correo es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@fecha_nacimiento,''))) = 0
+        THROW 51027, N'La fecha de nacimiento es obligatoria.',1;
+end
+go
+
+-- Procedimiento para crear una persona completa (Cliente)
+
+CREATE PROCEDURE sp_InsertarCliente
+    @cedula Tcedula,
+    @nombre VARCHAR(30),
+    @apellido1 VARCHAR(30),
+    @apellido2 VARCHAR(30),
+    @genero_nombre VARCHAR(9), -- 'Masculino' o 'Femenino'
+    @contrasena TCONTRASENA,
+    @correo TCORREO,
     @fecha_nacimiento DATE,
     @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
     @nivel_fitness VARCHAR(20) = 'Principiante',
@@ -15,6 +48,7 @@ CREATE PROCEDURE sp_InsertarCliente
 AS
 BEGIN
     SET NOCOUNT ON;
+    SET XACT_ABORT ON;
 
     DECLARE @id_genero TINYINT;
     DECLARE @id_nivel_fitness INT;
@@ -22,13 +56,14 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
+        exec sp_validarDatosPersona
+        @cedula,@nombre,@apellido1,@apellido2,
+        @genero_nombre,@contrasena,@correo,@fecha_nacimiento;
+
         -- Obtener ID del género
         SELECT @id_genero = id FROM Genero WHERE nombre = @genero_nombre;
         IF @id_genero IS NULL
-        BEGIN
-            RAISERROR('Género no válido. Use: Masculino o Femenino', 16, 1);
-            RETURN;
-        END
+            THROW ('Género no válido. Use: Masculino o Femenino', 16, 1);
 
         -- Obtener ID del nivel fitness
         SELECT @id_nivel_fitness = id_nivel_fitness FROM Nivel_Fitness WHERE nivel = @nivel_fitness;
@@ -101,7 +136,7 @@ CREATE PROCEDURE sp_InsertarEntrenador
     @fecha_nacimiento DATE,
     @experiencia VARCHAR(255) = NULL,
     @especialidades VARCHAR(500) = NULL, -- Lista separada por comas
-    @telefonos VARCHAR(500) = NULL
+    @telefonos VARCHAR(500) = NULL -- Lista separada por comas: '88887777,22223333'
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -237,5 +272,149 @@ BEGIN
     LEFT JOIN Nivel_Fitness nf ON c.id_nivel_fitness = nf.id_nivel_fitness
     WHERE (@cedula IS NULL OR p.cedula = @cedula)
         AND (@correo IS NULL OR p.correo = @correo);
+END;
+GO
+
+-- Procedimiento para crear administrativo
+CREATE PROCEDURE sp_InsertarAdministrativo
+    --Datos de tabla Personas
+    @cedula VARCHAR(11),
+    @nombre VARCHAR(30),
+    @apellido1 VARCHAR(30),
+    @apellido2 VARCHAR(30),
+    @genero_nombre VARCHAR(9),
+    @contrasena VARCHAR(20),
+    @correo VARCHAR(50),
+    @fecha_nacimiento DATE,
+
+    -- JSON array de IDs de permiso: '[1,2,3]'
+    @permisos         NVARCHAR(100) = NULL,
+
+    -- JSON array de teléfonos: '["88887777","22223333"]'
+    @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
+
+    --Datos de tabla Administrativo
+    @cargo VARCHAR(30)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SET XACT_ABORT ON;
+
+    -- 0) VALIDACIÓN DE PARÁMETROS OBLIGATORIOS
+    -- CONCAT(@p,'') convierte NULL en '', TRIM(…) quita espacios, LEN=0
+    IF LEN(TRIM(CONCAT(@cedula,''))) = 0
+        THROW 51020, N'La cédula es obligatoria.',1;
+    IF LEN(TRIM(CONCAT(@nombre,''))) = 0
+        THROW 51021, N'El nombre es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@apellido1,''))) = 0
+        THROW 51022, N'El primer apellido es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@apellido2,''))) = 0
+        THROW 51023, N'El segundo apellido es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@genero_nombre,''))) = 0
+        THROW 51024, N'El género es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@contrasena,''))) = 0
+        THROW 51025, N'La contraseña es obligatoria.',1;
+    IF LEN(TRIM(CONCAT(@correo,''))) = 0
+        THROW 51026, N'El correo es obligatorio.',1;
+    IF LEN(TRIM(CONCAT(@fecha_nacimiento,''))) = 0
+        THROW 51027, N'La fecha de nacimiento es obligatoria.',1;
+    IF LEN(TRIM(CONCAT(@cargo,''))) = 0
+    THROW 51028, N'El cargo es obligatorio.',1;
+
+    DECLARE @id_genero TINYINT;
+
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Obtener ID del género
+        SELECT @id_genero = id FROM Genero WHERE nombre = @genero_nombre;
+        IF @id_genero IS NULL
+        BEGIN
+            RAISERROR('Género no válido. Use: Masculino o Femenino', 16, 1);
+            RETURN;
+        END
+        IF LEN(TRIM(@nombre)) = 0
+        BEGIN
+            RAISERROR('El campo del nombre debne ser especificado', 16, 1);
+            RETURN;
+        END
+        -- Insertar persona
+        INSERT INTO Persona (cedula, nombre, apellido1, apellido2, genero, contraseña, correo, fecha_nacimiento)
+        VALUES (@cedula, @nombre, @apellido1, @apellido2, @id_genero, @contrasena, @correo, @fecha_nacimiento);
+
+        -- Obtener ID del Cargo
+        DECLARE @id_cargo INT;
+        select @id_cargo = id_cargo from Cargo where nombre = @cargo
+        if @id_cargo is NULL
+        begin
+            raiserror('El cargo específicado no existe',16,1);
+            return;
+        end
+        -- Insertar Administrativo
+        INSERT INTO Administrativo (cedula_administrativo, id_cargo)
+        VALUES (@cedula, @id_cargo);
+
+        -- Insertar permisos si se proporcionaron
+        IF @permisos IS NOT NULL
+            BEGIN
+              -- Validar JSON
+              IF ISJSON(@permisos) = 0
+                THROW 51010,'@Permisos debe ser un JSON válido: ej. ''[1,2,3]''.', 1;
+
+              -- Inserción masiva desde JSON
+              INSERT INTO Administrativo_Permiso
+                (id_administrativo, id_permiso)
+              SELECT
+                @cedula,                   -- tu PK de Administrativo
+                j.id_permiso               -- valor entero de cada elemento
+              FROM
+                OPENJSON(@permisos)
+                WITH (id_permiso INT '$') AS j
+              -- opcional: validar que exista en tabla Permiso
+              WHERE EXISTS (
+                SELECT 1
+                FROM Permiso p
+                WHERE p.id_permiso = j.id_permiso
+              );
+            END
+        -- Manejar teléfonos (código similar al de cliente)
+        IF @telefonos IS NOT NULL
+        BEGIN
+            IF ISJSON(@telefonos) = 0
+                THROW 51003,
+                  N'@telefonos debe ser un JSON válido: ''["88887777","22223333"]''.', 1;
+
+            -- 5.1) Extraer la lista de números a un table variable
+            DECLARE @Phones TABLE (numero VARCHAR(8) PRIMARY KEY);
+            INSERT INTO @Phones(numero)
+            SELECT TRIM([value])
+            FROM OPENJSON(@telefonos);
+
+            -- 5.2) Insertar los que faltan en Telefono
+            INSERT INTO Telefono (numero_telefono)
+            SELECT p.numero
+            FROM @Phones AS p
+            LEFT JOIN Telefono AS t
+            ON t.numero_telefono = p.numero
+            WHERE t.id_telefono IS NULL;
+
+            -- 5.3) Relacionar todos los teléfonos con la persona
+            INSERT INTO Telefono_Persona
+            (id_telefono, cedula_persona)
+            SELECT t.id_telefono, @cedula
+            FROM @Phones AS p
+            JOIN Telefono AS t
+            ON t.numero_telefono = p.numero;
+        END
+
+        COMMIT TRANSACTION;
+        PRINT 'Administrativo creado exitosamente: ' + @nombre + ' ' + @apellido1;
+
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@ErrorMessage, 16, 1);
+    END CATCH
 END;
 GO
