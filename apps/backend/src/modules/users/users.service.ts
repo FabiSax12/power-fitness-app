@@ -68,15 +68,22 @@ export class UsersService {
     return this.powerFitnessService.allUsers();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return `This action returns a #${id} user`;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  findProgresos(cedula: string) {
+    return this.dbService.executeQuery(
+      'SELECT * FROM Progreso WHERE cedula = @cedula',
+      { cedula }
+    )
+  }
+
+  update(id: string, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return null
   }
 }

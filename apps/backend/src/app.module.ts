@@ -11,6 +11,7 @@ import { AdministrativosModule } from './modules/administrativos/administrativos
 import { UsersModule } from './modules/users/users.module';
 import { MembresiasModule } from './modules/membresias/membresias.module';
 import { BeneficiosModule } from './modules/beneficios/beneficios.module';
+import { ProgresoModule } from './modules/progreso/progreso.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { BeneficiosModule } from './modules/beneficios/beneficios.module';
     MembresiasModule,
 
     BeneficiosModule,
+
+    ProgresoModule,
   ],
   providers: [PowerFitnessDbService],
   exports: [PowerFitnessDbService],

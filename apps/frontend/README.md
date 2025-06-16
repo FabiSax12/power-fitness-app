@@ -15,7 +15,7 @@
 - [x] Create
 - [x] Read
 - [] Update
-- [] Delete
+- [x] Delete
 ## 2. Usuarios (Vista Admin)
 - [] Create
 - [x] Read

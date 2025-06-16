@@ -55,7 +55,7 @@ CREATE TABLE Detalle (
     titulo VARCHAR(30) NOT NULL,
     descripcion VARCHAR(255),
     -- Foreign Keys
-    CONSTRAINT fk_detalle_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso)
+    CONSTRAINT fk_detalle_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso) ON DELETE CASCADE
 );
 
 CREATE TABLE Medicion (
@@ -74,5 +74,5 @@ CREATE TABLE Medicion (
     CONSTRAINT chk_medida_cm CHECK (medida_cm > 0),
 
     -- Foreign Keys
-    CONSTRAINT fk_medicion_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso)
+    CONSTRAINT fk_medicion_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso) ON DELETE CASCADE
 );

@@ -68,4 +68,11 @@ export class ClientesController {
       data: pagos.recordset
     }
   }
+
+  @Get(':cedula/progreso')
+  async findProgresos(@Param('cedula') cedula: string) {
+    const progresos = await this.clientesService.findProgresosAgrupados(cedula);
+
+    return progresos
+  }
 }

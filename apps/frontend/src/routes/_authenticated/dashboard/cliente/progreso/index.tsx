@@ -5,7 +5,8 @@ import { Chip } from '@heroui/chip'
 import {
   Award, Ruler, Trophy,
   BarChart3, Eye,
-  Plus
+  Plus,
+  Settings
 } from 'lucide-react'
 import { ReseumenTab } from '@/components/progreso-tabs/ResumenTab'
 import { MedicionesTab } from '@/components/progreso-tabs/MedicionesTab'
@@ -13,6 +14,8 @@ import { LogrosTab } from '@/components/progreso-tabs/LogrosTab'
 import type { VW_ProgresoCliente } from '@/core/types/vw_ProgresoCliente'
 import { AnalisisTab } from '@/components/progreso-tabs/AnalisisTab'
 import { RegistrarProgresoTab } from '@/components/progreso-tabs/RegistrarProgresoTab'
+import { GestionarProgresoTab } from '@/components/progreso-tabs/GestionarProgresoTab'
+import { useAuthStore } from '@/modules/auth/stores/authStore'
 
 export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso/')({
   component: RouteComponent,
@@ -135,6 +138,8 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
 function RouteComponent() {
   const { progresoData, medicionesData, logrosData, analisisData, clienteInfo } = Route.useLoaderData();
 
+  const cedulaUser = useAuthStore(state => state.user?.cedula);
+
   const [vistaActiva, setVistaActiva] = useState('resumen')
 
   // Calcular estadísticas si hay datos
@@ -168,7 +173,7 @@ function RouteComponent() {
               <p className="text-sm text-default-500">Último registro</p>
               <p className="text-sm font-medium">
                 {progresoData?.length > 0 ?
-                  new Date(progresoData[progresoData.length - 1].fecha).toLocaleDateString('es-CR', {
+                  new Date(progresoData[0].fecha).toLocaleDateString('es-CR', {
                     dateStyle: 'medium',
                   }) : 'Sin datos'
                 }
@@ -187,6 +192,7 @@ function RouteComponent() {
               { key: 'mediciones', label: 'Mediciones', icon: Ruler },
               { key: 'logros', label: 'Logros', icon: Award },
               { key: 'analisis', label: 'Análisis', icon: Eye },
+              { key: 'gestionar', label: 'Gestionar', icon: Settings },
               { key: 'registrar', label: 'Nuevo Progreso', icon: Plus }
             ].map(({ key, label, icon: Icon }) => (
               <Button
@@ -237,6 +243,11 @@ function RouteComponent() {
         {/* Vista Registrar Progreso */}
         {vistaActiva === 'registrar' && (
           <RegistrarProgresoTab />
+        )}
+
+        {/* Vista Gestionar Progreso */}
+        {vistaActiva === 'gestionar' && cedulaUser && (
+          <GestionarProgresoTab cedula={cedulaUser} />
         )}
       </div>
     </div>

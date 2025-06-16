@@ -91,7 +91,7 @@ export class MembresiasController {
     @Body() updateMembresiaDto: { beneficios_ids: number[] }
   ) {
     const result = await this.membresiasService.updateBeneficios(id, updateMembresiaDto);
-    return result.data
+    return result
   }
 
   @Delete('tipos/:id')

@@ -19,16 +19,21 @@ export class UsersController {
 
   @Get(':cedula')
   findOne(@Param('cedula') cedula: string) {
-    return this.usersService.findOne(+cedula);
+    return this.usersService.findOne(cedula);
+  }
+
+  @Get(':cedula/progreso')
+  findProgresos(@Param('cedula') cedula: string) {
+    return this.usersService.findOne(cedula);
   }
 
   @Patch(':cedula')
   update(@Param('cedula') cedula: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+cedula, updateUserDto);
+    return this.usersService.update(cedula, updateUserDto);
   }
 
   @Delete(':cedula')
   remove(@Param('cedula') cedula: string) {
-    return this.usersService.remove(+cedula);
+    return this.usersService.remove(cedula);
   }
 }
