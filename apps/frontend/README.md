@@ -36,3 +36,8 @@
 - [] Read
 - [] Update
 - [] Delete
+## 6. Beneficios (Vista Admin)
+- [x] Create
+- [x] Read
+- [] Update
+- [x] Delete

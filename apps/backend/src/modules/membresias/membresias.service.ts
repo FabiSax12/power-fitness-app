@@ -36,16 +36,20 @@ export class MembresiasService {
   }
 
   findAllTypes() {
-    return this.dbService.executeQuery(
-      `SELECT
-        id_tipo_membresia AS id,
-        nombre,
-        precio,
-        frecuencia
+    return this.dbService.executeQuery(`
+      SELECT
+        tm.id_tipo_membresia AS id,
+        tm.nombre,
+        tm.precio,
+        f.frecuencia,
+        COALESCE(b.nombre, '') as beneficio
       FROM Tipo_Membresia tm
       JOIN Frecuencia f ON f.id_frecuencia = tm.id_frecuencia
-      WHERE activo = 1;`
-    );
+      LEFT JOIN Beneficio_Tipo_Membresia btm ON btm.id_tipo_membresia = tm.id_tipo_membresia
+      LEFT JOIN Beneficio b ON b.id_beneficio = btm.id_beneficio
+      WHERE tm.activo = 1
+      ORDER BY tm.nombre, b.nombre;
+    `);
   }
 
   findAllFrecuencias() {
@@ -53,6 +57,18 @@ export class MembresiasService {
       `SELECT
         *
       FROM Frecuencia;`
+    );
+  }
+
+  findBeneficiosByTipo(id: number) {
+    return this.dbService.executeQuery(
+      `SELECT
+        b.id_beneficio AS id,
+        b.nombre
+      FROM Beneficio b
+      JOIN Beneficio_Tipo_Membresia btm ON btm.id_beneficio = b.id_beneficio
+      WHERE btm.id_tipo_membresia = @id`,
+      { id }
     );
   }
 
@@ -78,6 +94,10 @@ export class MembresiasService {
         id_frecuencia: updateTipoMembresiaDto.id_frecuencia
       }
     );
+  }
+
+  updateBeneficios(id: number, updateMembresiaDto: { beneficios_ids: number[] }) {
+    return 'Not implemented yet.'
   }
 
   remove(id: number) {

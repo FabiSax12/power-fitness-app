@@ -72,7 +72,7 @@ CREATE TABLE Beneficio (
 
 CREATE TABLE Beneficio_Tipo_Membresia (
     id_tipo_membresia INT FOREIGN KEY REFERENCES Tipo_Membresia(id_tipo_membresia),
-    id_beneficio INT FOREIGN KEY REFERENCES Beneficio(id_beneficio),
+    id_beneficio INT FOREIGN KEY REFERENCES Beneficio(id_beneficio) ON DELETE CASCADE,
 
     CONSTRAINT pk_beneficio_tipo_membresia PRIMARY KEY (id_tipo_membresia, id_beneficio)
 );

@@ -27,11 +27,41 @@ export class MembresiasController {
   @Get('tipos')
   async findAllTypes() {
     const membresias = await this.membresiasService.findAllTypes();
+
+    const grouped = membresias.recordset.reduce((acc, row) => {
+      const tipoId = row.id;
+
+      // Si el tipo no existe en el acumulador, crearlo
+      if (!acc[tipoId]) {
+        acc[tipoId] = {
+          id: row.id,
+          nombre: row.nombre,
+          precio: row.precio,
+          frecuencia: row.frecuencia,
+          beneficios: [],
+          cantidad_beneficios: 0
+        };
+      }
+
+      // Agregar beneficio si existe (no está vacío)
+      if (row.beneficio && row.beneficio.trim() !== '') {
+        acc[tipoId].beneficios.push(row.beneficio);
+        acc[tipoId].cantidad_beneficios = acc[tipoId].beneficios.length;
+      }
+
+      return acc;
+    }, {});
+
     return {
-      data: membresias.recordset,
-      total: membresias.data.length,
+      data: Object.values(grouped),
       message: 'Tipos de Membresías consultadas correctamente',
     };
+  }
+
+  @Get('tipos/:id/beneficios')
+  async findBeneficiosByTipo(@Param('id', ParseIntPipe) id: number) {
+    const beneficios = await this.membresiasService.findBeneficiosByTipo(id);
+    return beneficios.recordset
   }
 
   @Post('tipos')
@@ -53,6 +83,15 @@ export class MembresiasController {
       data: result.data,
       message: 'Tipo de Membresía actualizado correctamente',
     };
+  }
+
+  @Patch('tipos/:id/beneficios')
+  async updateBeneficios(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateMembresiaDto: { beneficios_ids: number[] }
+  ) {
+    const result = await this.membresiasService.updateBeneficios(id, updateMembresiaDto);
+    return result.data
   }
 
   @Delete('tipos/:id')
