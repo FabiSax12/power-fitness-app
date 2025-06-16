@@ -9,6 +9,7 @@ CREATE TABLE Tipo_Membresia (
     nombre VARCHAR(25) NOT NULL UNIQUE,
     precio TMonto NOT NULL,
     id_frecuencia INT NOT NULL,
+    activo BIT NOT NULL DEFAULT 1
 
     -- Foreign Keys
     CONSTRAINT fk_tipomembresia_frecuencia FOREIGN KEY (id_frecuencia) REFERENCES Frecuencia(id_frecuencia)
