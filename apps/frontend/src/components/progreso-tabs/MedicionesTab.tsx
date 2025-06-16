@@ -10,12 +10,14 @@ import {
 } from 'recharts'
 
 interface Props {
-  progresoData: Array<{
-    mes: string,
-    peso_total: number,
-    masa_muscular: number,
-    grasa_corporal: number
-  }>
+  progresoData: {
+    fecha: string;
+    mes: string;
+    peso_total: number;
+    grasa_corporal: number;
+    edad_metabolica: number;
+    medida_promedio: number;
+  }[]
   medicionesData: {
     progreso: number;
     grupo: string;

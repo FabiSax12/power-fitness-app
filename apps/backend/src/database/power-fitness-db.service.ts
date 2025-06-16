@@ -56,7 +56,7 @@ export class PowerFitnessDbService {
 
   async obtenerProgresoCliente(cedula: string): Promise<QueryResult> {
     this.logger.debug(`Obteniendo progreso completo para el cliente: ${cedula}`);
-    return await this.db.executeQuery('SELECT * FROM vw_ProgresoCliente WHERE cedula = @cedula', { cedula });
+    return await this.db.executeQuery('SELECT * FROM vw_ProgresoCliente p WHERE cedula = @cedula ORDER BY p.fecha ASC', { cedula });
   }
 
   async consultarPagosCliente(cedula: string): Promise<QueryResult> {

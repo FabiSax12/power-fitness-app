@@ -16,14 +16,16 @@ interface Props {
     fullMark: number;
   }[];
   estadisticas: {
-    perdidaPeso: number;
-    gananciaMusculo: number;
+    cambioPeso: number;
     reduccionGrasa: number;
     mejoraEdadMetabolica: number;
+    cambioMedidas: number;
   } | null;
 }
 
 export const AnalisisTab = ({ analisisData, estadisticas, progresoDataLength }: Props) => {
+  console.log('AnalisisTab', analisisData)
+
   return (
     <div className="space-y-8">
       {/* Radar de capacidades físicas */}
@@ -40,7 +42,7 @@ export const AnalisisTab = ({ analisisData, estadisticas, progresoDataLength }: 
               <RadarChart data={analisisData}>
                 <PolarGrid />
                 <PolarAngleAxis dataKey="metric" />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                {/* <PolarRadiusAxis angle={90} domain={[0, 100]} /> */}
                 <Radar
                   name="Nivel Actual"
                   dataKey="value"
@@ -62,11 +64,11 @@ export const AnalisisTab = ({ analisisData, estadisticas, progresoDataLength }: 
             <h3 className="text-2xl font-bold mb-4">¡Increíble Transformación!</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
               <div>
-                <div className="text-3xl font-bold">-{estadisticas.perdidaPeso.toFixed(1)}kg</div>
+                <div className="text-3xl font-bold">{-estadisticas.cambioPeso.toFixed(1)}kg</div>
                 <div className="text-primary-foreground/80">Peso perdido</div>
               </div>
               <div>
-                <div className="text-3xl font-bold">+{estadisticas.gananciaMusculo.toFixed(1)}kg</div>
+                <div className="text-3xl font-bold">{-estadisticas.cambioMedidas.toFixed(1)}cm</div>
                 <div className="text-primary-foreground/80">Músculo ganado</div>
               </div>
               <div>

@@ -101,9 +101,12 @@ export interface SP_RegistrarProgreso {
   name: 'sp_RegistrarProgreso';
   params: {
     cedula_cliente: string;
-    fecha?: Date; // Fecha del progreso, por defecto la fecha actual
+    fecha?: Date;
+    edad_metabolica?: number;
+    peso_kg?: number;
+    porcentaje_grasa?: number;
     detalles?: string; // Formato: 'titulo1:descripcion1,titulo2:descripcion2'
-    mediciones?: string; // Formato: 'musculo:kg_musculo:kg_grasa:kg_peso:kg'
+    mediciones?: string; // Formato: 'musculo:medida_cm,musculo2:medida_cm2'
   };
 }
 

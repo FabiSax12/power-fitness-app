@@ -56,18 +56,21 @@ export class ClientesService {
   }
 
   async findProgresosAgrupados(cedula: string) {
-    // 1. Obtener datos base de progreso
+    // 1. Obtener datos base de progreso (ACTUALIZADO con nuevos campos)
     const progresosBase = await this.dbService.executeQuery(`
     SELECT DISTINCT
       p.id_progreso,
       p.fecha,
+      p.peso_kg,
+      p.porcentaje_grasa,
+      p.edad_metabolica,
       FORMAT(p.fecha, 'dd/MM/yyyy') as fecha_legible
     FROM Progreso p
     WHERE p.cedula_cliente = @cedula
     ORDER BY p.fecha DESC;
   `, { cedula });
 
-    // 2. Obtener todos los detalles
+    // 2. Obtener todos los detalles (SIN CAMBIOS)
     const detalles = await this.dbService.executeQuery(`
     SELECT
       d.id_progreso,
@@ -80,23 +83,20 @@ export class ClientesService {
     ORDER BY d.id_progreso, d.titulo;
   `, { cedula });
 
-    // 3. Obtener todas las mediciones
+    // 3. Obtener todas las mediciones (ACTUALIZADO - solo medida_cm)
     const mediciones = await this.dbService.executeQuery(`
     SELECT
       m.id_progreso,
       m.id_medicion,
       m.musculo_nombre,
-      m.musculo_kg,
-      m.grasa_kg,
-      m.medida_cm,
-      m.edad_metabolica
+      m.medida_cm
     FROM Medicion m
     INNER JOIN Progreso p ON m.id_progreso = p.id_progreso
     WHERE p.cedula_cliente = @cedula
     ORDER BY m.id_progreso, m.musculo_nombre;
   `, { cedula });
 
-    // 4. Agrupar en JavaScript
+    // 4. Agrupar en JavaScript (ACTUALIZADO)
     return progresosBase.recordset.map(progreso => {
       // Filtrar detalles de este progreso
       const detallesProgreso = detalles.recordset.filter(d => d.id_progreso === progreso.id_progreso);
@@ -108,18 +108,21 @@ export class ClientesService {
         id_progreso: progreso.id_progreso,
         fecha: progreso.fecha,
         fecha_legible: progreso.fecha_legible,
+        // Nuevos campos del progreso
+        peso_kg: progreso.peso_kg,
+        porcentaje_grasa: progreso.porcentaje_grasa,
+        edad_metabolica: progreso.edad_metabolica,
+        // Detalles (sin cambios)
         detalles: detallesProgreso.map(d => ({
           id_detalles: d.id_detalles,
           titulo: d.titulo,
           descripcion: d.descripcion
         })),
+        // Mediciones (ACTUALIZADO - solo medida_cm)
         mediciones: medicionesProgreso.map(m => ({
           id_medicion: m.id_medicion,
           musculo_nombre: m.musculo_nombre,
-          musculo_kg: m.musculo_kg,
-          grasa_kg: m.grasa_kg,
-          medida_cm: m.medida_cm,
-          edad_metabolica: m.edad_metabolica
+          medida_cm: m.medida_cm
         })),
         cantidad_detalles: detallesProgreso.length,
         cantidad_mediciones: medicionesProgreso.length
@@ -127,8 +130,16 @@ export class ClientesService {
     });
   }
 
-  async createProgreso(cedula: string, body: { fecha: string, detalles: string, mediciones: string }) {
-    const response = await this.powerFitnessService.registrarProgreso({ cedula_cliente: cedula, detalles: body.detalles, fecha: new Date(body.fecha), mediciones: body.mediciones });
+  async createProgreso(cedula: string, body: { fecha: string, detalles: string, mediciones: string, edad_metabolica: number, peso_kg: number, porcentaje_grasa: number }) {
+    const response = await this.powerFitnessService.registrarProgreso({
+      cedula_cliente: cedula,
+      detalles: body.detalles,
+      edad_metabolica: body.edad_metabolica,
+      peso_kg: body.peso_kg,
+      porcentaje_grasa: body.porcentaje_grasa,
+      fecha: new Date(body.fecha),
+      mediciones: body.mediciones
+    });
     if (!response || response.recordset.length === 0) {
       throw new NotFoundException(`Progreso para el cliente con cédula ${cedula} no encontrado`);
     }

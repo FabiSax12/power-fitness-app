@@ -44,11 +44,9 @@ export class ClientesController {
   @Post(':cedula/progreso')
   async createProgreso(
     @Param('cedula') cedula: string,
-    @Body() body: { fecha: string, detalles: string, mediciones: string }
+    @Body() body: { fecha: string, detalles: string, mediciones: string, edad_metabolica: number, peso_kg: number, porcentaje_grasa: number }
   ) {
     const progreso = await this.clientesService.createProgreso(cedula, body);
-
-    console.log('Progreso encontrado:', JSON.stringify(progreso, null, 2));
 
     return {
       data: progreso.recordset

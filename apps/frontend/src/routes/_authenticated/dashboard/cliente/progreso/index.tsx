@@ -41,33 +41,38 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
 
       const { data: progresoCompleto } = await response.json() as { data: VW_ProgresoCliente[] };
 
-      // Procesar datos para las diferentes secciones
+      // Procesar datos para las diferentes secciones - ACTUALIZADO
       const progresoTemporal = progresoCompleto.map(record => ({
         fecha: record.fecha,
         mes: record.periodo_legible,
-        peso_total: record.peso_registrado, // Peso inicial del cliente
-        masa_muscular: record.masa_muscular_total,
-        grasa_corporal: record.grasa_corporal_promedio,
-        edad_metabolica: record.edad_metabolica
+        peso_total: record.peso_progreso || record.peso_registrado_cliente, // Nuevo campo peso_progreso
+        grasa_corporal: record.porcentaje_grasa, // Nuevo campo
+        edad_metabolica: record.edad_metabolica, // Ya existe
+        medida_promedio: record.medida_promedio_cm // Nuevo campo
       }));
 
-      // Datos para mediciones por grupo muscular (comparando primer vs último registro)
+      // Datos para mediciones por grupo muscular - ACTUALIZADO para medidas corporales
       const primerRegistro = progresoCompleto.find(r => r.es_primer_registro === 1);
       const ultimoRegistro = progresoCompleto.find(r => r.es_ultimo_registro === 1);
 
       const medicionesPorGrupo = [
-        { grupo: 'Bíceps', inicial: primerRegistro?.biceps_kg || 0, actual: ultimoRegistro?.biceps_kg || 0 },
-        { grupo: 'Pectorales', inicial: primerRegistro?.pectorales_kg || 0, actual: ultimoRegistro?.pectorales_kg || 0 },
-        { grupo: 'Cuádriceps', inicial: primerRegistro?.cuadriceps_kg || 0, actual: ultimoRegistro?.cuadriceps_kg || 0 },
-        { grupo: 'Glúteos', inicial: primerRegistro?.gluteos_kg || 0, actual: ultimoRegistro?.gluteos_kg || 0 },
-        { grupo: 'Espalda', inicial: primerRegistro?.espalda_kg || 0, actual: ultimoRegistro?.espalda_kg || 0 },
-        { grupo: 'Abdominales', inicial: primerRegistro?.abdominales_kg || 0, actual: ultimoRegistro?.abdominales_kg || 0 }
-      ].map(grupo => ({
-        ...grupo,
-        progreso: grupo.inicial > 0 ? ((grupo.actual - grupo.inicial) / grupo.inicial) * 100 : 0
-      }));
+        { grupo: 'Bíceps', inicial: primerRegistro?.biceps_cm || 0, actual: ultimoRegistro?.biceps_cm || 0 },
+        { grupo: 'Pectorales', inicial: primerRegistro?.pectorales_cm || 0, actual: ultimoRegistro?.pectorales_cm || 0 },
+        { grupo: 'Cuádriceps', inicial: primerRegistro?.cuadriceps_cm || 0, actual: ultimoRegistro?.cuadriceps_cm || 0 },
+        { grupo: 'Glúteos', inicial: primerRegistro?.gluteos_cm || 0, actual: ultimoRegistro?.gluteos_cm || 0 },
+        { grupo: 'Espalda', inicial: primerRegistro?.espalda_cm || 0, actual: ultimoRegistro?.espalda_cm || 0 },
+        { grupo: 'Abdominales', inicial: primerRegistro?.abdominales_cm || 0, actual: ultimoRegistro?.abdominales_cm || 0 },
+        { grupo: 'Cintura', inicial: primerRegistro?.cintura_cm || 0, actual: ultimoRegistro?.cintura_cm || 0 },
+        { grupo: 'Cadera', inicial: primerRegistro?.cadera_cm || 0, actual: ultimoRegistro?.cadera_cm || 0 },
+        { grupo: 'Brazo', inicial: primerRegistro?.brazo_cm || 0, actual: ultimoRegistro?.brazo_cm || 0 },
+        { grupo: 'Muslo', inicial: primerRegistro?.muslo_cm || 0, actual: ultimoRegistro?.muslo_cm || 0 }
+      ].filter(grupo => grupo.inicial > 0 || grupo.actual > 0) // Solo incluir grupos con datos
+        .map(grupo => ({
+          ...grupo,
+          progreso: grupo.inicial > 0 ? ((grupo.actual - grupo.inicial) / grupo.inicial) * 100 : 0
+        }));
 
-      // Logros extraídos de los detalles
+      // Logros extraídos de los detalles - SIN CAMBIOS
       const logros = progresoCompleto
         .filter(record => record.logros_count > 0 && record.detalles_completos)
         .map(record => ({
@@ -77,17 +82,21 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
           tipo: 'logro'
         }));
 
-      // Datos de análisis físico (usando el último registro)
+      // Datos de análisis físico - ACTUALIZADO
       const analisisFisico = ultimoRegistro ? [
-        { metric: 'Fuerza', value: Math.min(ultimoRegistro.progreso_masa_muscular_pct + 50, 100), fullMark: 100 },
-        { metric: 'Resistencia', value: Math.min(ultimoRegistro.mejora_edad_metabolica_pct + 60, 100), fullMark: 100 },
-        { metric: 'Composición', value: Math.min(ultimoRegistro.reduccion_grasa_pct + 40, 100), fullMark: 100 },
-        { metric: 'Constancia', value: ultimoRegistro.total_registros * 10, fullMark: 100 },
-        { metric: 'Progreso', value: Math.min((ultimoRegistro.progreso_masa_muscular_pct + ultimoRegistro.reduccion_grasa_pct) / 2, 100), fullMark: 100 },
-        { metric: 'Bienestar', value: Math.min(ultimoRegistro.mejora_edad_metabolica_pct + 30, 100), fullMark: 100 }
+        { metric: 'Composición', value: Math.min(Math.abs(ultimoRegistro.reduccion_grasa_pct || 0), 100), fullMark: 100 },
+        { metric: 'Peso', value: Math.min(Math.abs(ultimoRegistro.cambio_peso_pct || 0), 100), fullMark: 100 },
+        { metric: 'Edad Metabólica', value: Math.min(Math.abs(ultimoRegistro.mejora_edad_metabolica_pct || 0), 100), fullMark: 100 },
+        { metric: 'Medidas', value: Math.min(Math.abs(ultimoRegistro.cambio_medidas_pct || 0), 100), fullMark: 100 },
+        { metric: 'Constancia', value: Math.min((ultimoRegistro.total_registros || 0) * 10, 100), fullMark: 100 },
+        {
+          metric: 'Progreso General', value: Math.min(
+            (Math.abs(ultimoRegistro.reduccion_grasa_pct || 0) +
+              Math.abs(ultimoRegistro.mejora_edad_metabolica_pct || 0)) / 2, 100), fullMark: 100
+        }
       ] : [];
 
-      // Información del cliente desde la vista
+      // Información del cliente - ACTUALIZADA
       const clienteInfo = ultimoRegistro ? {
         nombre_completo: ultimoRegistro.nombre_completo,
         correo: ultimoRegistro.correo,
@@ -95,12 +104,13 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
         edad: ultimoRegistro.edad_actual,
         entrenador_actual: ultimoRegistro.entrenador_actual,
         evaluacion_constancia: ultimoRegistro.evaluacion_constancia,
-        evaluacion_progreso: ultimoRegistro.evaluacion_progreso_muscular,
+        evaluacion_progreso: ultimoRegistro.evaluacion_progreso_general, // Campo actualizado
         dias_seguimiento: ultimoRegistro.dias_total_seguimiento,
-        // Estadísticas clave
-        cambio_masa_muscular: ultimoRegistro.cambio_masa_muscular,
-        reduccion_grasa: ultimoRegistro.reduccion_grasa,
-        mejora_edad_metabolica: ultimoRegistro.mejora_edad_metabolica
+        // Estadísticas clave - ACTUALIZADAS
+        cambio_peso: ultimoRegistro.cambio_peso,
+        reduccion_grasa: ultimoRegistro.reduccion_grasa_porcentaje,
+        mejora_edad_metabolica: ultimoRegistro.mejora_edad_metabolica,
+        cambio_medidas: ultimoRegistro.cambio_medidas_promedio
       } : null;
 
       return {
@@ -116,7 +126,8 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
       console.error('Error loading progress data:', error);
       throw new Error('No se pudieron cargar los datos de progreso');
     }
-  },
+  }
+  ,
   errorComponent: ({ error }) => (
     <div className="min-h-screen flex items-center justify-center p-6">
       <div className="max-w-md mx-auto text-center">
@@ -137,17 +148,17 @@ export const Route = createFileRoute('/_authenticated/dashboard/cliente/progreso
 
 function RouteComponent() {
   const { progresoData, medicionesData, logrosData, analisisData, clienteInfo } = Route.useLoaderData();
-
-  const cedulaUser = useAuthStore(state => state.user?.cedula);
-
+  const cedulaUser = useAuthStore(state => state.user?.cedula)
   const [vistaActiva, setVistaActiva] = useState('resumen')
 
-  // Calcular estadísticas si hay datos
+  // Calcular estadísticas - ACTUALIZADO para nuevos campos
   const estadisticas = progresoData?.length > 0 ? {
-    perdidaPeso: progresoData[0].peso_total - progresoData[progresoData.length - 1].peso_total,
-    gananciaMusculo: progresoData[progresoData.length - 1].masa_muscular - progresoData[0].masa_muscular,
+    cambioPeso: progresoData[progresoData.length - 1].peso_total - progresoData[0].peso_total,
     reduccionGrasa: progresoData[0].grasa_corporal - progresoData[progresoData.length - 1].grasa_corporal,
-    mejoraEdadMetabolica: progresoData[0].edad_metabolica - progresoData[progresoData.length - 1].edad_metabolica
+    mejoraEdadMetabolica: progresoData[0].edad_metabolica - progresoData[progresoData.length - 1].edad_metabolica,
+    cambioMedidas: progresoData[progresoData.length - 1].medida_promedio
+      ? (progresoData[progresoData.length - 1].medida_promedio - (progresoData[0].medida_promedio || 0))
+      : 0
   } : null
 
   return (
@@ -191,7 +202,7 @@ function RouteComponent() {
               { key: 'resumen', label: 'Resumen', icon: BarChart3 },
               { key: 'mediciones', label: 'Mediciones', icon: Ruler },
               { key: 'logros', label: 'Logros', icon: Award },
-              { key: 'analisis', label: 'Análisis', icon: Eye },
+              // { key: 'analisis', label: 'Análisis', icon: Eye },
               { key: 'gestionar', label: 'Gestionar', icon: Settings },
               { key: 'registrar', label: 'Nuevo Progreso', icon: Plus }
             ].map(({ key, label, icon: Icon }) => (
@@ -232,13 +243,13 @@ function RouteComponent() {
         )}
 
         {/* Vista Análisis */}
-        {vistaActiva === 'analisis' && analisisData && (
+        {/* {vistaActiva === 'analisis' && analisisData && (
           <AnalisisTab
             analisisData={analisisData}
             estadisticas={estadisticas}
             progresoDataLength={progresoData.length}
           />
-        )}
+        )} */}
 
         {/* Vista Registrar Progreso */}
         {vistaActiva === 'registrar' && (

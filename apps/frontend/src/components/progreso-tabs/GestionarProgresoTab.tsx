@@ -16,47 +16,22 @@ import { Divider } from '@heroui/divider'
 import { Input, Textarea } from '@heroui/input'
 import { useDisclosure, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@heroui/table'
-
-// Tipos de datos
-interface RegistroProgreso {
-  id_progreso: number
-  fecha: string
-  fecha_legible: string
-  detalles: DetalleProgreso[]
-  mediciones: MedicionProgreso[]
-  cantidad_detalles: number
-  cantidad_mediciones: number
-}
-
-interface DetalleProgreso {
-  id_detalles: number
-  titulo: string
-  descripcion: string
-}
-
-interface MedicionProgreso {
-  id_medicion: number
-  musculo_nombre: string
-  musculo_kg: number
-  grasa_kg: number
-  medida_cm: number
-  edad_metabolica: number
-}
+import type { ProgresoCliente, DetalleProgreso, MedicionProgreso } from '@/core/types/vw_ProgresoCliente'
 
 interface EditarProgresoData {
+  peso_kg: number
+  porcentaje_grasa: number
+  edad_metabolica: number
   detalles: { titulo: string; descripcion: string }[]
   mediciones: {
     musculo_nombre: string
-    musculo_kg: number
-    grasa_kg: number
     medida_cm: number
-    edad_metabolica: number
   }[]
 }
 
 // API Functions
 const api = {
-  getRegistrosProgreso: async (cedula: string): Promise<RegistroProgreso[]> => {
+  getRegistrosProgreso: async (cedula: string): Promise<ProgresoCliente[]> => {
     const response = await fetch(`http://localhost:3000/api/clientes/${cedula}/progreso`)
     if (!response.ok) throw new Error('Error al obtener registros')
     const result = await response.json()
@@ -93,9 +68,9 @@ interface GestionarProgresoTabProps {
 
 export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
   const queryClient = useQueryClient()
-  const [selectedProgreso, setSelectedProgreso] = useState<RegistroProgreso | null>(null)
-  const [editingProgreso, setEditingProgreso] = useState<RegistroProgreso | null>(null)
-  const [deletingProgreso, setDeletingProgreso] = useState<RegistroProgreso | null>(null)
+  const [selectedProgreso, setSelectedProgreso] = useState<ProgresoCliente | null>(null)
+  const [editingProgreso, setEditingProgreso] = useState<ProgresoCliente | null>(null)
+  const [deletingProgreso, setDeletingProgreso] = useState<ProgresoCliente | null>(null)
   const [editFormData, setEditFormData] = useState<EditarProgresoData | null>(null)
 
   const { isOpen: isViewOpen, onOpen: onViewOpen, onOpenChange: onViewOpenChange } = useDisclosure()
@@ -123,13 +98,13 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
   useEffect(() => {
     if (detalleEdicion && isSuccess) {
       setEditFormData({
+        edad_metabolica: detalleEdicion.edad_metabolica,
+        peso_kg: detalleEdicion.peso_kg,
+        porcentaje_grasa: detalleEdicion.porcentaje_grasa,
         detalles: detalleEdicion.detalles.map(d => ({ titulo: d.titulo, descripcion: d.descripcion })),
         mediciones: detalleEdicion.mediciones.map(m => ({
           musculo_nombre: m.musculo_nombre,
-          musculo_kg: m.musculo_kg,
-          grasa_kg: m.grasa_kg,
-          medida_cm: m.medida_cm,
-          edad_metabolica: m.edad_metabolica
+          medida_cm: m.medida_cm
         }))
       })
     }
@@ -158,17 +133,17 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
   })
 
   // Event handlers
-  const handleView = (registro: RegistroProgreso) => {
+  const handleView = (registro: ProgresoCliente) => {
     setSelectedProgreso(registro)
     onViewOpen()
   }
 
-  const handleEdit = (registro: RegistroProgreso) => {
+  const handleEdit = (registro: ProgresoCliente) => {
     setEditingProgreso(registro)
     onEditOpen()
   }
 
-  const handleDelete = (registro: RegistroProgreso) => {
+  const handleDelete = (registro: ProgresoCliente) => {
     setDeletingProgreso(registro)
     onDeleteOpen()
   }
@@ -213,9 +188,9 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
             <Calendar className="w-4 h-4 text-primary" />
             <div>
               <div className="font-medium">{item.fecha_legible}</div>
-              <div className="text-xs text-default-500">
+              {/* <div className="text-xs text-default-500">
                 {new Date(item.fecha).toLocaleDateString('es-CR')}
-              </div>
+              </div> */}
             </div>
           </div>
         )
@@ -301,7 +276,7 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
       {/* Header */}
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between w-full items-center">
             <div>
               <h2 className="text-xl font-semibold">Gestionar Registros de Progreso</h2>
               <p className="text-default-500 text-sm">
@@ -394,26 +369,37 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
                             Mediciones Corporales
                           </h3>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <Card key={'peso'}>
+                              <CardBody className="py-3">
+                                <h4 className="font-medium text-secondary">Peso</h4>
+                                <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                                  <div>
+                                    <span className="text-default-500">Medida:</span>
+                                    <span className="ml-1 font-medium">{selectedProgreso.peso_kg} kg</span>
+                                  </div>
+                                </div>
+                              </CardBody>
+                            </Card>
+
+                            <Card key={'grasa'}>
+                              <CardBody className="py-3">
+                                <h4 className="font-medium text-secondary">Grasa</h4>
+                                <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
+                                  <div>
+                                    <span className="text-default-500">Medida:</span>
+                                    <span className="ml-1 font-medium">{selectedProgreso.porcentaje_grasa}%</span>
+                                  </div>
+                                </div>
+                              </CardBody>
+                            </Card>
                             {selectedProgreso.mediciones.map((medicion) => (
                               <Card key={medicion.id_medicion}>
                                 <CardBody className="py-3">
                                   <h4 className="font-medium text-secondary">{medicion.musculo_nombre}</h4>
                                   <div className="grid grid-cols-2 gap-2 mt-2 text-sm">
                                     <div>
-                                      <span className="text-default-500">Músculo:</span>
-                                      <span className="ml-1 font-medium">{medicion.musculo_kg} kg</span>
-                                    </div>
-                                    <div>
-                                      <span className="text-default-500">Grasa:</span>
-                                      <span className="ml-1 font-medium">{medicion.grasa_kg} kg</span>
-                                    </div>
-                                    <div>
                                       <span className="text-default-500">Medida:</span>
                                       <span className="ml-1 font-medium">{medicion.medida_cm} cm</span>
-                                    </div>
-                                    <div>
-                                      <span className="text-default-500">E. Metabólica:</span>
-                                      <span className="ml-1 font-medium">{medicion.edad_metabolica} años</span>
                                     </div>
                                   </div>
                                 </CardBody>
@@ -475,66 +461,63 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
                                   setEditFormData({ ...editFormData, detalles: newDetalles })
                                 }}
                               />
+                              <Divider />
                             </div>
                           ))}
                         </div>
                       </div>
 
-                      <Divider />
 
                       {/* Editar Mediciones */}
                       <div>
                         <h3 className="text-lg font-semibold mb-3">Mediciones</h3>
-                        <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                          <Card>
+                            <CardBody>
+                              <h4 className="font-medium mb-3">Peso</h4>
+                              <Input
+                                label="Peso (kg)"
+                                type="number"
+                                step="0.1"
+                                value={editFormData.peso_kg.toString()}
+                                onChange={(e) => {
+                                  setEditFormData({ ...editFormData, peso_kg: parseFloat(e.target.value) || 0 })
+                                }}
+                              />
+                            </CardBody>
+                          </Card>
+
+                          <Card>
+                            <CardBody>
+                              <h4 className="font-medium mb-3">Grasa</h4>
+                              <Input
+                                label="Grasa (%)"
+                                type="number"
+                                step="0.1"
+                                value={editFormData.porcentaje_grasa.toString()}
+                                onChange={(e) => {
+                                  setEditFormData({ ...editFormData, porcentaje_grasa: parseFloat(e.target.value) || 0 })
+                                }}
+                              />
+                            </CardBody>
+                          </Card>
+
                           {editFormData.mediciones.map((medicion, index) => (
                             <Card key={index}>
                               <CardBody>
                                 <h4 className="font-medium mb-3">{medicion.musculo_nombre}</h4>
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                  <Input
-                                    label="Músculo (kg)"
-                                    type="number"
-                                    step="0.1"
-                                    value={medicion.musculo_kg.toString()}
-                                    onChange={(e) => {
-                                      const newMediciones = [...editFormData.mediciones]
-                                      newMediciones[index].musculo_kg = parseFloat(e.target.value) || 0
-                                      setEditFormData({ ...editFormData, mediciones: newMediciones })
-                                    }}
-                                  />
-                                  <Input
-                                    label="Grasa (kg)"
-                                    type="number"
-                                    step="0.1"
-                                    value={medicion.grasa_kg.toString()}
-                                    onChange={(e) => {
-                                      const newMediciones = [...editFormData.mediciones]
-                                      newMediciones[index].grasa_kg = parseFloat(e.target.value) || 0
-                                      setEditFormData({ ...editFormData, mediciones: newMediciones })
-                                    }}
-                                  />
-                                  <Input
-                                    label="Medida (cm)"
-                                    type="number"
-                                    step="0.1"
-                                    value={medicion.medida_cm.toString()}
-                                    onChange={(e) => {
-                                      const newMediciones = [...editFormData.mediciones]
-                                      newMediciones[index].medida_cm = parseFloat(e.target.value) || 0
-                                      setEditFormData({ ...editFormData, mediciones: newMediciones })
-                                    }}
-                                  />
-                                  <Input
-                                    label="Edad Metabólica"
-                                    type="number"
-                                    value={medicion.edad_metabolica.toString()}
-                                    onChange={(e) => {
-                                      const newMediciones = [...editFormData.mediciones]
-                                      newMediciones[index].edad_metabolica = parseInt(e.target.value) || 0
-                                      setEditFormData({ ...editFormData, mediciones: newMediciones })
-                                    }}
-                                  />
-                                </div>
+                                <Input
+                                  label="Medida (cm)"
+                                  type="number"
+                                  step="0.1"
+                                  value={medicion.medida_cm.toString()}
+                                  onChange={(e) => {
+                                    const newMediciones = [...editFormData.mediciones]
+                                    newMediciones[index].medida_cm = parseFloat(e.target.value) || 0
+                                    setEditFormData({ ...editFormData, mediciones: newMediciones })
+                                  }}
+                                />
                               </CardBody>
                             </Card>
                           ))}
@@ -597,6 +580,6 @@ export function GestionarProgresoTab({ cedula }: GestionarProgresoTabProps) {
           )}
         </ModalContent>
       </Modal>
-    </div>
+    </div >
   )
 }
