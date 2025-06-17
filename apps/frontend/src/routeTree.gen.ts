@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as IndexImport } from './routes/index'
+import { Route as AuthRegistrarImport } from './routes/auth/registrar'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthenticatedDashboardIndexImport } from './routes/_authenticated/dashboard/index'
 import { Route as AuthenticatedDashboardAdminRouteImport } from './routes/_authenticated/dashboard/admin/route'
@@ -92,6 +93,12 @@ const AuthenticatedRouteRoute = AuthenticatedRouteImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRegistrarRoute = AuthRegistrarImport.update({
+  id: '/auth/registrar',
+  path: '/auth/registrar',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -593,6 +600,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/login'
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/registrar': {
+      id: '/auth/registrar'
+      path: '/auth/registrar'
+      fullPath: '/auth/registrar'
+      preLoaderRoute: typeof AuthRegistrarImport
       parentRoute: typeof rootRoute
     }
     '/_authenticated/dashboard/admin': {
@@ -1294,6 +1308,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
+  '/auth/registrar': typeof AuthRegistrarRoute
   '/dashboard/admin': typeof AuthenticatedDashboardAdminRouteRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/cliente/perfil': typeof AuthenticatedDashboardClientePerfilRoute
@@ -1367,6 +1382,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '': typeof AuthenticatedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
+  '/auth/registrar': typeof AuthRegistrarRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
   '/dashboard/cliente/perfil': typeof AuthenticatedDashboardClientePerfilRoute
   '/dashboard/entrenador/perfil': typeof AuthenticatedDashboardEntrenadorPerfilRoute
@@ -1440,6 +1456,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
+  '/auth/registrar': typeof AuthRegistrarRoute
   '/_authenticated/dashboard/admin': typeof AuthenticatedDashboardAdminRouteRouteWithChildren
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
   '/_authenticated/dashboard/cliente/perfil': typeof AuthenticatedDashboardClientePerfilRoute
@@ -1515,6 +1532,7 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/auth/login'
+    | '/auth/registrar'
     | '/dashboard/admin'
     | '/dashboard'
     | '/dashboard/cliente/perfil'
@@ -1587,6 +1605,7 @@ export interface FileRouteTypes {
     | '/'
     | ''
     | '/auth/login'
+    | '/auth/registrar'
     | '/dashboard'
     | '/dashboard/cliente/perfil'
     | '/dashboard/entrenador/perfil'
@@ -1658,6 +1677,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth/login'
+    | '/auth/registrar'
     | '/_authenticated/dashboard/admin'
     | '/_authenticated/dashboard/'
     | '/_authenticated/dashboard/cliente/perfil'
@@ -1732,12 +1752,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthLoginRoute: typeof AuthLoginRoute
+  AuthRegistrarRoute: typeof AuthRegistrarRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthLoginRoute: AuthLoginRoute,
+  AuthRegistrarRoute: AuthRegistrarRoute,
 }
 
 export const routeTree = rootRoute
@@ -1752,7 +1774,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/_authenticated",
-        "/auth/login"
+        "/auth/login",
+        "/auth/registrar"
       ]
     },
     "/": {
@@ -1799,6 +1822,9 @@ export const routeTree = rootRoute
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
+    },
+    "/auth/registrar": {
+      "filePath": "auth/registrar.tsx"
     },
     "/_authenticated/dashboard/admin": {
       "filePath": "_authenticated/dashboard/admin/route.tsx",

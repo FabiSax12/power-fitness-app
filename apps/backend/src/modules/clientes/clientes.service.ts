@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { PowerFitnessDbService } from 'src/database/power-fitness-db.service';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Injectable()
 export class ClientesService {
@@ -9,6 +10,55 @@ export class ClientesService {
     private readonly powerFitnessService: PowerFitnessDbService,
     private readonly dbService: DatabaseService,
   ) { }
+
+  async create(body: CreateUserDto) {
+    // Validar si el cliente ya existe
+    const existingPerson = await this.dbService.executeQuery(`
+      SELECT * FROM Persona WHERE cedula = @cedula OR correo = @correo
+    `,
+      {
+        cedula: body.cedula,
+        correo: body.correo
+      }
+    );
+
+    if (existingPerson.recordset.length > 0) {
+
+      if (existingPerson.recordset.some(person => person.cedula === body.cedula)) {
+        throw new ConflictException(`Persona con cédula ${body.cedula} ya existe`);
+      }
+
+      if (existingPerson.recordset.some(person => person.correo === body.correo)) {
+        throw new ConflictException(`Persona con correo ${body.correo} ya existe`);
+      }
+    }
+
+    console.log('body', body)
+
+    // Registrar el nuevo cliente
+    const response = await this.dbService.executeProcedure({
+      name: 'sp_InsertarCliente',
+      params: {
+        cedula: body.cedula,
+        nombre: body.nombre,
+        apellido1: body.apellido1,
+        apellido2: body.apellido2,
+        genero_nombre: body.genero_nombre,
+        contrasena: body.contrasena,
+        correo: body.correo,
+        fecha_nacimiento: new Date(body.fecha_nacimiento),
+        telefonos: body.telefonos?.join(','),
+        nivel_fitness: body.nivel_fitness,
+        peso: body.peso
+      }
+    });
+
+    // if (!response.recordset || response.recordset.length === 0) {
+    //   throw new NotFoundException(`Error al registrar el cliente con cédula ${body.cedula}`);
+    // }
+
+    return response;
+  }
 
   async findOneByCedula(cedula: string) {
     const response = await this.powerFitnessService.consultarCliente(cedula);
@@ -148,9 +198,9 @@ export class ClientesService {
 
   async getPagos(cedula: string) {
     const response = await this.powerFitnessService.consultarPagosCliente(cedula);
-    if (!response || response.recordset.length === 0) {
-      throw new NotFoundException(`Pagos para el cliente con cédula ${cedula} no encontrado`);
-    }
+    // if (!response || response.recordset.length === 0) {
+    //   throw new NotFoundException(`Pagos para el cliente con cédula ${cedula} no encontrado`);
+    // }
     return response;
   }
 }
