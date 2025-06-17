@@ -167,7 +167,9 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
         });
       }
 
+      console.debug(`🔧 Ejecutando procedimiento '${name}' con parámetros: ${JSON.stringify(params)}`);
       const result = await request.execute(name);
+      console.debug
       const executionTime = Date.now() - startTime;
 
       this.logger.debug(`🔧 Procedimiento '${JSON.stringify(request.toReadableStream())}' ejecutado en ${executionTime}ms`);
@@ -175,8 +177,8 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       return {
         success: true,
         recordset: result.recordset,
-        data: result.recordset[0],
-        affectedRows: result.rowsAffected[0],
+        data: result.recordset?.[0],
+        affectedRows: result.rowsAffected?.[0],
       };
 
     } catch (error) {

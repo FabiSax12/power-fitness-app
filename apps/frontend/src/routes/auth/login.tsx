@@ -50,7 +50,7 @@ const loginSearchSchema = {
 }
 
 export const Route = createFileRoute('/auth/login')({
-  validateSearch: (search): typeof loginSearchSchema => ({
+  validateSearch: (search): typeof loginSearchSchema | undefined => ({
     redirect: z.string().optional().parse(search.redirect),
     error: z.string().optional().parse(search.error),
   }),
@@ -190,9 +190,10 @@ function LoginPage() {
           variants={logoVariants}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-2xl shadow-lg mb-4">
+          {/* <div className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-2xl shadow-lg mb-4">
             <Dumbbell className="h-10 w-10 text-primary-foreground" />
-          </div>
+          </div> */}
+          <img src="/pw-logo-perfil.png" alt="" className="inline-flex items-center justify-center w-20 h-20 bg-primary rounded-full shadow-lg mb-4" />
           <h1 className="text-3xl font-bold text-foreground mb-2">Power Fitness</h1>
           <p className="text-default-500">Ingresa a tu cuenta para continuar</p>
         </motion.div>
@@ -341,13 +342,21 @@ function LoginPage() {
                 </Checkbox>
 
                 <Link
+                  href="/auth/registrar"
+                  size="sm"
+                  className="text-primary hover:text-primary-600"
+                  isDisabled={loginMutation.isPending}
+                >
+                  Crear cuenta
+                </Link>
+                {/* <Link
                   href="/auth/forgot-password"
                   size="sm"
                   className="text-primary hover:text-primary-600"
                   isDisabled={loginMutation.isPending}
                 >
                   ¿Olvidaste tu contraseña?
-                </Link>
+                </Link> */}
               </div>
 
               {/* Botón de Login */}
