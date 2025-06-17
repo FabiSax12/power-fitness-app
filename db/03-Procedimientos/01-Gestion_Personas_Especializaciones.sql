@@ -1,3 +1,4 @@
+-- drop procedure sp_validarDatosPersona
 create procedure sp_validarDatosPersona
     @cedula TCedula,
     @nombre VARCHAR(30),
@@ -12,27 +13,31 @@ begin
     set nocount on;
     set xact_abort on;
 
-    IF LEN(TRIM(CONCAT(@cedula,''))) = 0
-        THROW 51020, N'La cédula es obligatoria.',1;
-    IF LEN(TRIM(CONCAT(@nombre,''))) = 0
-        THROW 51021, N'El nombre es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@apellido1,''))) = 0
-        THROW 51022, N'El primer apellido es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@apellido2,''))) = 0
-        THROW 51023, N'El segundo apellido es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@genero_nombre,''))) = 0
-        THROW 51024, N'El género es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@contrasena,''))) = 0
-        THROW 51025, N'La contraseña es obligatoria.',1;
-    IF LEN(TRIM(CONCAT(@correo,''))) = 0
-        THROW 51026, N'El correo es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@fecha_nacimiento,''))) = 0
-        THROW 51027, N'La fecha de nacimiento es obligatoria.',1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@cedula, '')))) = 0
+           THROW 51020, N'La cédula es obligatoria.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@nombre, '')))) = 0
+           THROW 51021, N'El nombre es obligatorio.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@apellido1, '')))) = 0
+           THROW 51022, N'El primer apellido es obligatorio.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@apellido2, '')))) = 0
+           THROW 51023, N'El segundo apellido es obligatorio.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@genero_nombre, '')))) = 0
+           THROW 51024, N'El género es obligatorio.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@contrasena, '')))) = 0
+           THROW 51025, N'La contraseña es obligatoria.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@correo, '')))) = 0
+           THROW 51026, N'El correo es obligatorio.', 1;
+    IF LEN(LTRIM(RTRIM(CONCAT(@fecha_nacimiento, '')))) = 0
+           THROW 51027, N'La fecha de nacimiento es obligatoria.', 1;
+    IF DATEDIFF(year, @fecha_nacimiento, GETDATE()) < 12
+        THROW 51028, N'La persona debe tener al menos 12 años.', 1;
+    IF DATEDIFF(year, @fecha_nacimiento, GETDATE()) > 120
+        THROW 51028, N'La persona debe tener como máximo 100 años.', 1;
 end
 go
 
+--drop procedure sp_InsertarCliente
 -- Procedimiento para crear una persona completa (Cliente)
-
 CREATE PROCEDURE sp_InsertarCliente
     @cedula Tcedula,
     @nombre VARCHAR(30),
@@ -44,14 +49,12 @@ CREATE PROCEDURE sp_InsertarCliente
     @fecha_nacimiento DATE,
     @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
     @nivel_fitness VARCHAR(20) = 'Principiante',
-    @peso DECIMAL(5,2) = 70.0
+    @peso TPeso = 70.0,
+    @testing bit = 0
 AS
 BEGIN
     SET NOCOUNT ON;
     SET XACT_ABORT ON;
-
-    DECLARE @id_genero TINYINT;
-    DECLARE @id_nivel_fitness INT;
 
     BEGIN TRY
         BEGIN TRANSACTION;
@@ -60,18 +63,18 @@ BEGIN
         @cedula,@nombre,@apellido1,@apellido2,
         @genero_nombre,@contrasena,@correo,@fecha_nacimiento;
 
+        DECLARE @id_genero TINYINT;
+        DECLARE @id_nivel_fitness INT;
+
         -- Obtener ID del género
-        SELECT @id_genero = id FROM Genero WHERE nombre = @genero_nombre;
+        SELECT @id_genero = id FROM Genero WHERE nombre = LTRIM(RTRIM(@genero_nombre));
         IF @id_genero IS NULL
-            THROW ('Género no válido. Use: Masculino o Femenino', 16, 1);
+            THROW 51029, N'Género no válido. Use: Masculino o Femenino', 1;
 
         -- Obtener ID del nivel fitness
         SELECT @id_nivel_fitness = id_nivel_fitness FROM Nivel_Fitness WHERE nivel = @nivel_fitness;
         IF @id_nivel_fitness IS NULL
-        BEGIN
-            RAISERROR('Nivel de fitness no válido', 16, 1);
-            RETURN;
-        END
+            THROW 51030, N'Nivel de fitness no válido', 1;
 
         -- Insertar persona
         INSERT INTO Persona (cedula, nombre, apellido1, apellido2, genero, contraseña, correo, fecha_nacimiento)
@@ -81,34 +84,53 @@ BEGIN
         INSERT INTO Cliente (cedula_cliente, id_nivel_fitness, peso)
         VALUES (@cedula, @id_nivel_fitness, @peso);
 
-        -- Insertar teléfonos si se proporcionaron
+        -- Insertar y relacionar teléfonos si se proporcionaron
         IF @telefonos IS NOT NULL
         BEGIN
-            DECLARE @telefono VARCHAR(8);
-            DECLARE @pos INT = 1;
-            DECLARE @id_telefono INT;
+            DECLARE @SplitTelefonos TABLE (numero_telefono VARCHAR(8));
+            DECLARE @Conflictos TABLE (numero_telefono VARCHAR(8));
 
-            WHILE @pos <= LEN(@telefonos)
+            -- Poblar SplitTelefonos
+            INSERT INTO @SplitTelefonos (numero_telefono)
+            SELECT TRIM(value)
+            FROM STRING_SPLIT(@telefonos, ',')
+            WHERE value <> '';  -- Evita cadenas vacías
+
+            -- Poblar Conflictos
+            INSERT INTO @Conflictos (numero_telefono)
+            SELECT s.numero_telefono
+            FROM @SplitTelefonos s
+            WHERE EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona = @cedula  -- Duplicado para la misma persona
+            )
+            OR EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona <> @cedula  -- Asignado a otra persona
+            );
+
+            IF EXISTS (SELECT 1 FROM @Conflictos)
             BEGIN
-                DECLARE @next_comma INT = CHARINDEX(',', @telefonos, @pos);
-                IF @next_comma = 0 SET @next_comma = LEN(@telefonos) + 1;
-
-                SET @telefono = LTRIM(RTRIM(SUBSTRING(@telefonos, @pos, @next_comma - @pos)));
-
-                -- Verificar si el teléfono ya existe
-                SELECT @id_telefono = id_telefono FROM Telefono WHERE numero_telefono = @telefono;
-
-                IF @id_telefono IS NULL
-                BEGIN
-                    INSERT INTO Telefono (numero_telefono) VALUES (@telefono);
-                    SET @id_telefono = SCOPE_IDENTITY();
-                END
-
-                -- Relacionar teléfono con persona
-                INSERT INTO Telefono_Persona (id_telefono, cedula_persona) VALUES (@id_telefono, @cedula);
-
-                SET @pos = @next_comma + 1;
+                DECLARE @mensaje_error NVARCHAR(1000) = N'Error en teléfonos: Los siguientes números ya están asignados: ' +
+                    (SELECT STRING_AGG(numero_telefono, ', ') FROM @Conflictos);
+                THROW 51032, @mensaje_error, 1;  -- Lanza error con detalles
             END
+            ELSE
+            BEGIN
+                INSERT INTO Telefono (numero_telefono, cedula_persona)
+                SELECT s.numero_telefono, @cedula
+                FROM @SplitTelefonos s;
+            END;
+        END
+
+        -- Bloque para testing
+        IF @testing = 1
+        BEGIN
+            PRINT 'Datos del Cliente: ' + @nombre + ' ' + @apellido1 + ' correctos';
+            PRINT 'Pero los datos no fueron almacenados (testing = 1)';
+            THROW 51033, N'Modo testing activado: cambios no guardados para evitar alteraciones en la base de datos.', 1;  -- Lanza error para cancelar transacción
         END
 
         COMMIT TRANSACTION;

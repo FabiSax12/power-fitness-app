@@ -1,14 +1,6 @@
 -- =====================================================
 -- PERSONAS (Clientes)
 -- =====================================================
-select * from Cliente
-truncate table Persona
-DELETE FROM Persona
-WHERE EXISTS (
-    SELECT 1 FROM Cliente c WHERE c.cedula_cliente = Persona.cedula
-    UNION ALL
-    SELECT 1 FROM Entrenador e WHERE e.cedula_entrenador = Persona.cedula
-);
 
 EXEC sp_InsertarCliente
     @cedula = '1-0234-0567',
@@ -18,7 +10,7 @@ EXEC sp_InsertarCliente
     @genero_nombre = 'Femenino',
     @contrasena = 'MariGonz2024!',
     @correo = 'maria.gonzalez@gmail.com',
-    @fecha_nacimiento = '1995-03-15',
+    @fecha_nacimiento = '1993-05-24',
     @telefonos = '88234567,22451234',
     @nivel_fitness = 'Principiante',
     @peso = 62.5;
@@ -28,7 +20,7 @@ EXEC sp_InsertarCliente
     @nombre = 'Ana Sofía',
     @apellido1 = 'Morales',
     @apellido2 = 'Jiménez',
-    @genero_nombre = 'Femenino',
+    @genero_nombre = 'feMEniNo',
     @contrasena = 'AnaSofia123',
     @correo = 'ana.morales@hotmail.com',
     @fecha_nacimiento = '1988-07-22',
@@ -201,6 +193,7 @@ EXEC sp_InsertarCliente
     @contrasena = 'MelissaC789',
     @correo = 'melissa.cordero@gmail.com',
     @fecha_nacimiento = '1994-03-12',
+    @telefonos = NULL,
     @nivel_fitness = 'Principiante',
     @peso = 60.7;
 
@@ -269,7 +262,6 @@ EXEC sp_InsertarCliente
     @nivel_fitness = 'Intermedio',
     @peso = 80.6;
 
---Nuevos Registros
 EXEC sp_InsertarCliente
     @cedula = '1-1122-3344',
     @nombre = 'Sofía',
@@ -370,7 +362,7 @@ EXEC sp_InsertarCliente
     @contrasena = 'GabyV001!',
     @correo = 'gabriela.valverde@hotmail.com',
     @fecha_nacimiento = '2003-01-01',
-    @telefonos = '77345678,81931234',
+    @telefonos = '77345678',
     @nivel_fitness = 'Principiante',
     @peso = 50.2;
 
@@ -396,7 +388,7 @@ EXEC sp_InsertarCliente
     @contrasena = 'CamiC2025!',
     @correo = 'camila.chavarria@gmail.com',
     @fecha_nacimiento = '2002-06-14',
-    @telefonos = '79345678,72365678',
+    @telefonos = '79345678,72395678',
     @nivel_fitness = 'Principiante',
     @peso = 55.3;
 
@@ -514,7 +506,7 @@ EXEC sp_InsertarCliente
     @correo = 'sebastian.rojas@gmail.com',
     @fecha_nacimiento = '1991-01-05',
     @telefonos = '78355678',
-    @nivel_fitness = 'Avanzado',
+    @nivel_fitness = 'Intermedio',
     @peso = 82.3;
 
 EXEC sp_InsertarCliente
@@ -526,7 +518,7 @@ EXEC sp_InsertarCliente
     @contrasena = 'CamiloE213!',
     @correo = 'camilo.espinoza@outlook.com',
     @fecha_nacimiento = '1993-12-30',
-    @telefonos = '79355678,72395678',
+    @telefonos = '79355678,72395625',
     @nivel_fitness = 'Avanzado',
     @peso = 79.9;
 
@@ -658,16 +650,17 @@ EXEC sp_InsertarCliente
     @fecha_nacimiento = '1993-07-07',
     @telefonos = '89365678',
     @nivel_fitness = 'Avanzado',
-    @peso = 81.7;
+    @peso = 88.9;
 
+-- Corrección para el registro con errores
 EXEC sp_InsertarCliente
     @cedula = '2-2934-9999',
-    @nombre = '',
+    @nombre = 'Rodrigo',
     @apellido1 = 'Vargas',
     @apellido2 = 'Herrera',
     @genero_nombre = 'Masculino',
     @contrasena = 'RodV2934!',
-    @correo = '.vargas@hotmail.com',
+    @correo = 'rodrigo.vargas@hotmail.com',
     @fecha_nacimiento = '1993-07-07',
     @nivel_fitness = 'Avanzado',
     @peso = 81.7;
