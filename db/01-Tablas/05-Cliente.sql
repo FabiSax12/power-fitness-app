@@ -65,7 +65,7 @@ CREATE TABLE Detalle (
     -- Foreign Keys
     CONSTRAINT fk_detalle_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso) ON DELETE CASCADE
 );
-
+select * from Medicion
 CREATE TABLE Medicion (
     id_medicion INT PRIMARY KEY IDENTITY,
     id_progreso INT NOT NULL,

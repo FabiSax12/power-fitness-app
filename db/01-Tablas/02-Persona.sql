@@ -20,15 +20,9 @@ CREATE TABLE Persona (
 
 CREATE TABLE Telefono (
     id_telefono INT PRIMARY KEY IDENTITY,
-    numero_telefono TTelefono NOT NULL UNIQUE
-);
-
-CREATE TABLE Telefono_Persona (
-    id_telefono_persona INT PRIMARY KEY IDENTITY,
-    id_telefono INT NOT NULL,
+    numero_telefono TTelefono NOT NULL UNIQUE,
     cedula_persona TCedula NOT NULL,
 
     -- Foreign Keys
-    CONSTRAINT fk_telefonopersona_telefono FOREIGN KEY (id_telefono) REFERENCES Telefono(id_telefono),
-    CONSTRAINT fk_telefonopersona_persona FOREIGN KEY (cedula_persona) REFERENCES Persona(cedula)
+    CONSTRAINT fk_telefono_persona FOREIGN KEY (cedula_persona) REFERENCES Persona(cedula)
 );
