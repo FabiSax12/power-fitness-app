@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Body, Param, Delete, ParseIntPipe, Put } from '@nestjs/common';
 import { ProgresoService } from './progreso.service';
-import { CreateProgresoDto } from './dto/create-progreso.dto';
 import { UpdateProgresoDto } from './dto/update-progreso.dto';
 
 @Controller('progreso')
@@ -14,7 +13,7 @@ export class ProgresoController {
     return detalles.recordset;
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateProgresoDto: UpdateProgresoDto) {
     return this.progresoService.update(id, updateProgresoDto);
   }

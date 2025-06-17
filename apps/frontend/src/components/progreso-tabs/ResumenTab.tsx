@@ -3,7 +3,7 @@ import {
   CardBody,
   CardHeader,
 } from '@heroui/card'
-import { Chip } from '@heroui/chip'
+import { Chip, type ChipProps } from '@heroui/chip'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar
@@ -46,6 +46,7 @@ export function ReseumenTab({ estadisticas, progresoData, medicionesData }: Prop
   }
 
   // Obtener datos para calcular porcentajes
+  console.log('Progreso Data:', progresoData)
   const primerRegistro = progresoData[0]
   const ultimoRegistro = progresoData[progresoData.length - 1]
 
@@ -68,14 +69,14 @@ export function ReseumenTab({ estadisticas, progresoData, medicionesData }: Prop
   return (
     <div className="space-y-8">
       {/* Métricas principales */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <MetricCard
           icon={Scale}
           titulo="Cambio de Peso"
           valor={estadisticas.cambioPeso > 0 ? `+${estadisticas.cambioPeso.toFixed(1)}` : estadisticas.cambioPeso.toFixed(1)}
           unidad="kg"
           cambio={porcentajePeso}
-          tipo={estadisticas.cambioPeso <= 0 ? 'success' : 'danger'}
+          tipo={'primary'}
           color={estadisticas.cambioPeso <= 0 ? 'success' : 'warning'}
         />
         <MetricCard
@@ -96,7 +97,7 @@ export function ReseumenTab({ estadisticas, progresoData, medicionesData }: Prop
           tipo={estadisticas.mejoraEdadMetabolica > 0 ? 'success' : 'danger'}
           color="secondary"
         />
-        <MetricCard
+        {/* <MetricCard
           icon={Ruler}
           titulo="Cambio Medidas"
           valor={estadisticas.cambioMedidas > 0 ? `+${estadisticas.cambioMedidas.toFixed(1)}` : estadisticas.cambioMedidas.toFixed(1)}
@@ -104,7 +105,7 @@ export function ReseumenTab({ estadisticas, progresoData, medicionesData }: Prop
           cambio={porcentajeMedidas}
           tipo={estadisticas.cambioMedidas >= 0 ? 'success' : 'danger'}
           color="primary"
-        />
+        /> */}
       </div>
 
       {/* Gráfico de evolución */}
@@ -316,24 +317,24 @@ function MetricCard({
   valor: number | string,
   unidad?: string,
   cambio: string,
-  tipo?: 'success' | 'danger',
+  tipo?: ChipProps['color'],
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger'
 }) {
   return (
     <Card className="h-full">
-      <CardBody className="p-6">
+      <CardBody className="p-6 flex flex-row gap-4 items-center ">
         <div className="flex items-center justify-between mb-4">
           <div className={`w-12 h-12 rounded-lg bg-${color}/10 flex items-center justify-center`}>
             <Icon className={`w-6 h-6 text-${color}`} />
           </div>
-          <Chip
-            color={tipo === 'success' ? 'success' : 'danger'}
+          {/* <Chip
+            color={tipo}
             variant="flat"
             startContent={tipo === 'success' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             size="sm"
           >
             {cambio}
-          </Chip>
+          </Chip> */}
         </div>
         <div className="space-y-1">
           <p className="text-2xl font-bold text-foreground">{valor}{unidad}</p>

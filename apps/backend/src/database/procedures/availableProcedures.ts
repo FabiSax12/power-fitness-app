@@ -110,6 +110,20 @@ export interface SP_RegistrarProgreso {
   };
 }
 
+export interface SP_ActualizarProgreso {
+  name: 'sp_ActualizarProgreso';
+  params: {
+    id_progreso: number;
+    peso_kg?: number;
+    porcentaje_grasa?: number;
+    edad_metabolica?: number;
+    detalles?: string; // Formato: 'titulo1:descripcion1,titulo2:descripcion2'
+    mediciones?: string; // Formato: 'musculo_nombre:medida_cm,musculo_nombre2:medida_cm2'
+    preservar_detalles_existentes?: boolean; // 0 = reemplazar, 1 = mantener existentes
+    preservar_mediciones_existentes?: boolean; // 0 = reemplazar, 1 = mantener existentes
+  };
+}
+
 export interface SP_InsertarEmpleado {
   name: 'sp_InsertarEmpleado';
   params: {
@@ -138,4 +152,5 @@ export type Procedures =
   | SP_CrearRutina
   | SP_ConsultarRutinas
   | SP_RegistrarProgreso
+  | SP_ActualizarProgreso
   | SP_InsertarEmpleado;

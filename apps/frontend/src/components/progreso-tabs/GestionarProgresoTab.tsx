@@ -47,7 +47,7 @@ const api = {
 
   updateProgreso: async (idProgreso: number, data: EditarProgresoData): Promise<void> => {
     const response = await fetch(`http://localhost:3000/api/progreso/${idProgreso}`, {
-      method: 'PATCH',
+      method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     })
