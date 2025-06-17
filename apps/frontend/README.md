@@ -14,7 +14,7 @@
 ## 1. Progreso Cliente (Vista Cliente)
 - [x] Create
 - [x] Read
-- [] Update
+- [x] Update
 - [x] Delete
 ## 2. Usuarios (Vista Admin)
 - [] Create
@@ -39,5 +39,5 @@
 ## 6. Beneficios (Vista Admin)
 - [x] Create
 - [x] Read
-- [] Update
+- [x] Update
 - [x] Delete
