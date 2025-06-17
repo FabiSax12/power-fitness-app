@@ -14,18 +14,18 @@
 ## 1. Progreso Cliente (Vista Cliente)
 - [x] Create
 - [x] Read
-- [] Update
-- [] Delete
+- [x] Update
+- [x] Delete
 ## 2. Usuarios (Vista Admin)
 - [] Create
 - [x] Read
 - [] Update
-- [] Delete
-## 3. Membresias (Vista Admin)
-- [] Create
-- [] Read
-- [] Update
-- [] Delete
+- [x] Delete
+## 3. Tipos Membresias (Vista Admin)
+- [x] Create
+- [x] Read
+- [x] Update
+- [x] Delete
 ## 4. Rutinas (Vista Entrenador)
 - [] Create
 - [] Read
@@ -36,3 +36,8 @@
 - [] Read
 - [] Update
 - [] Delete
+## 6. Beneficios (Vista Admin)
+- [x] Create
+- [x] Read
+- [x] Update
+- [x] Delete

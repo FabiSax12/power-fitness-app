@@ -9,6 +9,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RutinasModule } from './modules/rutinas/rutinas.module';
 import { AdministrativosModule } from './modules/administrativos/administrativos.module';
 import { UsersModule } from './modules/users/users.module';
+import { MembresiasModule } from './modules/membresias/membresias.module';
+import { BeneficiosModule } from './modules/beneficios/beneficios.module';
+import { ProgresoModule } from './modules/progreso/progreso.module';
 
 @Module({
   imports: [
@@ -38,6 +41,12 @@ import { UsersModule } from './modules/users/users.module';
     AdministrativosModule,
 
     UsersModule,
+
+    MembresiasModule,
+
+    BeneficiosModule,
+
+    ProgresoModule,
   ],
   providers: [PowerFitnessDbService],
   exports: [PowerFitnessDbService],

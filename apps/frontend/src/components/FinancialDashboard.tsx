@@ -137,7 +137,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
   const crecimientoMensual = calcularCrecimiento();
 
   return (
-    <div className="min-h-screen p-6 bg-background">
+    <div className="min-h-screen p-6">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -171,7 +171,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
             {/* Ingresos Totales */}
-            <Card className="shadow-lg bg-gradient-to-br from-success-50 to-success-100 dark:from-success-50/10 dark:to-success-100/10">
+            <Card className="shadow-lg bg-gradient-to-br from-success-50 to-success-100 dark:from-success-50 dark:to-success-100">
               <CardBody className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -196,7 +196,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
             </Card>
 
             {/* Clientes Únicos */}
-            <Card className="shadow-lg bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-50/10 dark:to-primary-100/10">
+            <Card className="shadow-lg bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-50 dark:to-primary-100">
               <CardBody className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -217,7 +217,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
             </Card>
 
             {/* Ticket Promedio */}
-            <Card className="shadow-lg bg-gradient-to-br from-secondary-50 to-secondary-100 dark:from-secondary-50/10 dark:to-secondary-100/10">
+            <Card className="shadow-lg bg-gradient-to-br from-secondary-50 to-secondary-100 dark:from-secondary-50 dark:to-secondary-100">
               <CardBody className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -238,7 +238,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
             </Card>
 
             {/* Tasa de Retención */}
-            <Card className="shadow-lg bg-gradient-to-br from-warning-50 to-warning-100 dark:from-warning-50/10 dark:to-warning-100/10">
+            <Card className="shadow-lg bg-gradient-to-br from-warning-50 to-warning-100 dark:from-warning-50 dark:to-warning-100">
               <CardBody className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -344,7 +344,7 @@ const FinancialDashboard = ({ financialData }: Props) => {
               </CardHeader>
               <CardBody>
                 <div className="space-y-4">
-                  <div className="p-4 bg-primary-50 dark:bg-primary-50/10 rounded-lg">
+                  <div className="p-4 bg-primary-50 dark:bg-primary-50 rounded-lg">
                     <div className="text-sm text-primary-600 dark:text-primary-400 mb-1">
                       Ingresos Proyectados
                     </div>

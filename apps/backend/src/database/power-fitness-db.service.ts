@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DatabaseService, QueryResult } from './database.service';
-import { SP_AgregarEjercicioRutina, SP_CrearMembresia, SP_CrearRutina, SP_InsertarCliente, SP_RegistrarProgreso } from './procedures/availableProcedures';
+import { SP_AgregarEjercicioRutina, SP_CrearMembresia, SP_CrearRutina, SP_InsertarCliente, SP_InsertarEmpleado, SP_RegistrarProgreso } from './procedures/availableProcedures';
 
 @Injectable()
 export class PowerFitnessDbService {
@@ -56,7 +56,7 @@ export class PowerFitnessDbService {
 
   async obtenerProgresoCliente(cedula: string): Promise<QueryResult> {
     this.logger.debug(`Obteniendo progreso completo para el cliente: ${cedula}`);
-    return await this.db.executeQuery('SELECT * FROM vw_ProgresoCliente WHERE cedula = @cedula', { cedula });
+    return await this.db.executeQuery('SELECT * FROM vw_ProgresoCliente p WHERE cedula = @cedula ORDER BY p.fecha ASC', { cedula });
   }
 
   async consultarPagosCliente(cedula: string): Promise<QueryResult> {
@@ -185,6 +185,12 @@ export class PowerFitnessDbService {
 
     return await this.db.executeQuery(searchQuery, { query: `%${query}%` });
   }
+
+
+  async insertarEmpleado(empleadoData: SP_InsertarEmpleado['params']): Promise<QueryResult> {
+    return await this.db.executeProcedure({ name: 'sp_InsertarEmpleado', params: empleadoData });
+  }
+
 
   // ===== ESTADÍSTICAS RÁPIDAS =====
   async obtenerEstadisticasGenerales(): Promise<QueryResult> {
