@@ -137,9 +137,10 @@ function AuthenticatedLayout() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              <div className="p-2 bg-primary rounded-lg">
+              {/* <div className="p-2 bg-primary rounded-lg">
                 <Dumbbell className="h-6 w-6 text-primary-foreground" />
-              </div>
+              </div> */}
+              <img src="/pw-logo-perfil.png" alt="" className="p-2 rounded-full h-16 w-16" />
               <div className="hidden sm:block">
                 <p className="font-bold text-xl text-foreground">Power Fitness</p>
                 <p className="text-xs text-default-500 -mt-1">
