@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsDate, IsNumber, Min, Max, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsDate, IsNumber, Min, Max, Matches, IsOptional, IsNumberString, IsDateString, MaxDate } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -29,22 +29,22 @@ export class CreateUserDto {
   experiencia: string;
 
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   fecha_nacimiento: Date;
 
   @IsNotEmpty()
-  @IsNumber()
-  @Min(1)
-  @Max(2)
-  genero: number;
+  @IsString()
+  @Matches(/^(Masculino|Femenino)$/)
+  genero: 'Masculino' | 'Femenino';
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumberString()
   id_cargo: number;
 
   @IsNotEmpty()
-  @IsNumber()
-  id_nivel_fitness: number;
+  @IsString()
+  @Matches(/^(Principiante|Intermedio|Avanzado)$/)
+  nivel_fitness: 'Principiante' | 'Intermedio' | 'Avanzado';
 
   @IsNotEmpty()
   @IsNumber()
@@ -53,4 +53,8 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
   tipo_usuario: string;
+
+  @IsOptional()
+  @IsString({ each: true })
+  telefonos?: string[]
 }

@@ -45,6 +45,14 @@ CREATE TABLE Progreso (
     id_progreso INT PRIMARY KEY IDENTITY,
     cedula_cliente TCedula NOT NULL,
     fecha DATE DEFAULT GETDATE(),
+    peso_kg DECIMAL(5,2),
+    porcentaje_grasa TINYINT,
+    edad_metabolica TINYINT,
+
+    CONSTRAINT chk_peso_kg CHECK (peso_kg >= 30),
+    CONSTRAINT chk_grasa CHECK (porcentaje_grasa >= 0 AND porcentaje_grasa <= 100),
+    CONSTRAINT chk_edad_metabolica CHECK (edad_metabolica BETWEEN 10 AND 100),
+
     -- Foreign Keys
     CONSTRAINT fk_progreso_cliente FOREIGN KEY (cedula_cliente) REFERENCES Cliente(cedula_cliente)
 );
@@ -55,24 +63,18 @@ CREATE TABLE Detalle (
     titulo VARCHAR(30) NOT NULL,
     descripcion VARCHAR(255),
     -- Foreign Keys
-    CONSTRAINT fk_detalle_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso)
+    CONSTRAINT fk_detalle_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso) ON DELETE CASCADE
 );
 
 CREATE TABLE Medicion (
     id_medicion INT PRIMARY KEY IDENTITY,
     id_progreso INT NOT NULL,
     musculo_nombre VARCHAR(25) NOT NULL,
-    musculo_kg DECIMAL(5,2) NOT NULL,
-    grasa_kg DECIMAL(5,2) NOT NULL,
     medida_cm DECIMAL(5,1) NOT NULL,
-    edad_metabolica INT NOT NULL,
 
     -- Checks
-    CONSTRAINT chk_musculo_kg CHECK (musculo_kg >= 0),
-    CONSTRAINT chk_grasa_kg CHECK (grasa_kg >= 0 AND grasa_kg <= 100),
-    CONSTRAINT chk_edad_metabolica CHECK (edad_metabolica BETWEEN 10 AND 100),
     CONSTRAINT chk_medida_cm CHECK (medida_cm > 0),
 
     -- Foreign Keys
-    CONSTRAINT fk_medicion_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso)
+    CONSTRAINT fk_medicion_progreso FOREIGN KEY (id_progreso) REFERENCES Progreso(id_progreso) ON DELETE CASCADE
 );

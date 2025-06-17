@@ -26,7 +26,7 @@ const personaBaseSchema = z.object({
   nombre: z.string().min(2, 'Mínimo 2 caracteres').max(30, 'Máximo 30 caracteres'),
   apellido1: z.string().min(2, 'Mínimo 2 caracteres').max(30, 'Máximo 30 caracteres'),
   apellido2: z.string().min(2, 'Mínimo 2 caracteres').max(30, 'Máximo 30 caracteres'),
-  genero: z.enum(['1', '2', '3'], { errorMap: () => ({ message: 'Seleccione un género' }) }),
+  genero: z.enum(['Masculino', 'Femenino'], { errorMap: () => ({ message: 'Seleccione un género' }) }),
   contraseña: z.string().min(8, 'Mínimo 8 caracteres'),
   correo: z.string().email('Correo electrónico inválido'),
   fecha_nacimiento: z.string().refine((date) => {
@@ -40,7 +40,7 @@ const personaBaseSchema = z.object({
 const clienteSchema = personaBaseSchema.extend({
   tipo_usuario: z.literal('cliente'),
   peso: z.number().min(30).max(300).optional(),
-  id_nivel_fitness: z.enum(['1', '2', '3']).optional()
+  nivel_fitness: z.enum(['Principiante', 'Intermedio', 'Avanzado']).optional()
 })
 
 const entrenadorSchema = personaBaseSchema.extend({
@@ -71,8 +71,9 @@ const usersService = {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     })
-    if (!response.ok) throw new Error('Error al crear usuario')
-    return response.json()
+    const data = await response.json()
+    if (!response.ok) throw new Error(data.message || 'Error al crear usuario')
+    return data
   }
 }
 
@@ -99,13 +100,13 @@ function RouteComponent() {
       nombre: '',
       apellido1: '',
       apellido2: '',
-      genero: '1',
+      genero: 'Masculino',
       contraseña: '',
       correo: '',
       fecha_nacimiento: '',
       tipo_usuario: 'cliente',
       peso: 70,
-      id_nivel_fitness: '1',
+      nivel_fitness: 'Principiante',
       experiencia: '',
       id_cargo: '1',
     } as UserFormData,
@@ -298,9 +299,8 @@ function RouteComponent() {
                     errorMessage={field.state.meta.errors[0]?.message}
                     isRequired
                   >
-                    <SelectItem key="1">Masculino</SelectItem>
-                    <SelectItem key="2">Femenino</SelectItem>
-                    <SelectItem key="3">Otro</SelectItem>
+                    <SelectItem key="Masculino">Masculino</SelectItem>
+                    <SelectItem key="Femenino">Femenino</SelectItem>
                   </Select>
                 )}
               />
@@ -375,7 +375,7 @@ function RouteComponent() {
                         )}
                       />
                       <form.Field
-                        name="id_nivel_fitness"
+                        name="nivel_fitness"
                         children={(field) => (
                           <Select
                             label="Nivel de Fitness"
@@ -386,9 +386,9 @@ function RouteComponent() {
                             errorMessage={field.state.meta.errors[0]?.message}
                             description="Nivel de experiencia en ejercicio"
                           >
-                            <SelectItem key="1">Principiante</SelectItem>
-                            <SelectItem key="2">Intermedio</SelectItem>
-                            <SelectItem key="3">Avanzado</SelectItem>
+                            <SelectItem key="Principiante">Principiante</SelectItem>
+                            <SelectItem key="Intermedio">Intermedio</SelectItem>
+                            <SelectItem key="Avanzado">Avanzado</SelectItem>
                           </Select>
                         )}
                       />
@@ -467,15 +467,20 @@ function RouteComponent() {
               >
                 Cancelar
               </Button>
-              <Button
-                color="primary"
-                isLoading={createMutation.isPending}
-                isDisabled={!form.state.canSubmit}
-                startContent={!createMutation.isPending && <Save className="w-4 h-4" />}
-                onPress={form.handleSubmit}
-              >
-                {createMutation.isPending ? 'Creando Usuario...' : 'Crear Usuario'}
-              </Button>
+              <form.Subscribe
+                selector={(state) => state.canSubmit}
+                children={(canSubmit) => (
+                  <Button
+                    color="primary"
+                    isLoading={createMutation.isPending}
+                    isDisabled={!canSubmit}
+                    startContent={!createMutation.isPending && <Save className="w-4 h-4" />}
+                    onPress={form.handleSubmit}
+                  >
+                    {createMutation.isPending ? 'Creando Usuario...' : 'Crear Usuario'}
+                  </Button>
+                )}
+              />
             </div>
           </CardBody>
         </Card>

@@ -1,11 +1,19 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ClientesService } from './clientes.service';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Controller('clientes')
 export class ClientesController {
   constructor(
     private readonly clientesService: ClientesService
   ) { }
+
+  @Post()
+  async create(
+    @Body() body: CreateUserDto
+  ) {
+    return this.clientesService.create(body);
+  }
 
   @Get(":cedula")
   async findAll(
@@ -44,11 +52,9 @@ export class ClientesController {
   @Post(':cedula/progreso')
   async createProgreso(
     @Param('cedula') cedula: string,
-    @Body() body: { fecha: string, detalles: string, mediciones: string }
+    @Body() body: { fecha: string, detalles: string, mediciones: string, edad_metabolica: number, peso_kg: number, porcentaje_grasa: number }
   ) {
     const progreso = await this.clientesService.createProgreso(cedula, body);
-
-    console.log('Progreso encontrado:', JSON.stringify(progreso, null, 2));
 
     return {
       data: progreso.recordset
@@ -67,5 +73,12 @@ export class ClientesController {
     return {
       data: pagos.recordset
     }
+  }
+
+  @Get(':cedula/progreso')
+  async findProgresos(@Param('cedula') cedula: string) {
+    const progresos = await this.clientesService.findProgresosAgrupados(cedula);
+
+    return progresos
   }
 }

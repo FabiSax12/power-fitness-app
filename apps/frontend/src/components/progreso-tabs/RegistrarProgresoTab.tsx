@@ -30,7 +30,6 @@ const detalleSchema = z.object({
 const medicionSchema = z.object({
   musculo: z.string().min(1, "Selecciona un grupo muscular"),
   cm: z.number().min(0, "Debe ser mayor a 0").max(200, "Máximo 200cm"),
-  kg_musculo: z.number().min(0, "Debe ser mayor a 0").max(100, "Máximo 100kg"),
 })
 
 const formSchema = z.object({
@@ -43,8 +42,9 @@ const formSchema = z.object({
   }),
   detalles: z.array(detalleSchema).min(1, "Agrega al menos un detalle"),
   mediciones: z.array(medicionSchema).min(1, "Agrega al menos una medición"),
-  kg_grasa: z.number().min(0, "Debe ser mayor a 0").max(100, "Máximo 100%"),
-  edad_metabolica: z.number().min(10, "Mínimo 10 años").max(100, "Máximo 100 años")
+  porcentaje_grasa: z.number().min(0, "Debe ser mayor a 0").max(100, "Máximo 100%"),
+  edad_metabolica: z.number().min(10, "Mínimo 10 años").max(100, "Máximo 100 años"),
+  peso_kg: z.number().min(0, "Debe ser mayor a 0").max(500, "Máximo 500kg"),
 })
 
 // Grupos musculares disponibles
@@ -73,12 +73,11 @@ export const RegistrarProgresoTab = ({ onSuccess, onError }: Props) => {
       detalles: [{ titulo: "", descripcion: "" }],
       mediciones: [{
         musculo: "",
-        kg_musculo: 0,
-        cm: 0,
+        cm: 1,
       }],
-      kg_grasa: 0,
+      porcentaje_grasa: 0,
+      peso_kg: 30,
       edad_metabolica: 25,
-
     },
     onSubmit: async ({ value }) => {
       setIsSubmitting(true)
@@ -94,7 +93,7 @@ export const RegistrarProgresoTab = ({ onSuccess, onError }: Props) => {
         // Formatear mediciones: 'musculo:kg_musculo:kg_grasa:cm:edad_metabolica'
         const medicionesString = value.mediciones
           .filter(m => m.musculo.trim())
-          .map(m => `${m.musculo}:${m.kg_musculo}:${value.kg_grasa}:${m.cm}:${value.edad_metabolica}`)
+          .map(m => `${m.musculo}:${m.cm}`)
           .join(',')
 
         // Validar que tenemos datos
@@ -109,6 +108,9 @@ export const RegistrarProgresoTab = ({ onSuccess, onError }: Props) => {
           },
           body: JSON.stringify({
             fecha: value.fecha.toString(),
+            peso_kg: value.peso_kg,
+            porcentaje_grasa: value.porcentaje_grasa,
+            edad_metabolica: value.edad_metabolica,
             detalles: detallesString,
             mediciones: medicionesString
           })
@@ -320,7 +322,25 @@ export const RegistrarProgresoTab = ({ onSuccess, onError }: Props) => {
           </CardHeader>
           <CardBody>
             <div className="flex gap-4 mb-4">
-              <form.Field name="kg_grasa">
+              <form.Field name="peso_kg">
+                {
+                  (field) => <Input
+                    type="number"
+                    label="Peso (kg)"
+                    placeholder="30.0"
+                    step="0.1"
+                    min="30"
+                    max="100"
+                    value={field.state.value.toString()}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0
+                      field.handleChange(value)
+                    }}
+                  />
+                }
+              </form.Field>
+
+              <form.Field name="porcentaje_grasa">
                 {
                   (field) => <Input
                     type="number"
@@ -382,21 +402,6 @@ export const RegistrarProgresoTab = ({ onSuccess, onError }: Props) => {
                                   </SelectItem>
                                 ))}
                               </Select>
-
-                              <Input
-                                type="number"
-                                label="Masa Muscular (kg)"
-                                placeholder="0.0"
-                                step="0.1"
-                                min="0"
-                                max="100"
-                                value={medicion.kg_musculo.toString()}
-                                onChange={(e) => {
-                                  const newMediciones = [...field.state.value]
-                                  newMediciones[index].kg_musculo = parseFloat(e.target.value) || 0
-                                  field.handleChange(newMediciones)
-                                }}
-                              />
                               <Input
                                 type="number"
                                 label="Medida (cm)"
