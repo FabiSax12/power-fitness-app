@@ -665,6 +665,7 @@ EXEC sp_InsertarCliente
     @nivel_fitness = 'Avanzado',
     @peso = 81.7;
 
+select cedula, nombre from Persona,Cliente where cedula = cedula_cliente
 select * from Cliente order by peso
 select * from Condicion_Medica
 -- Condiciones Médicas

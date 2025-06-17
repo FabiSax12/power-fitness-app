@@ -48,6 +48,7 @@ CREATE PROCEDURE sp_InsertarCliente
     @correo TCORREO,
     @fecha_nacimiento DATE,
     @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
+    @condiciones_medicas NVARCHAR(500) = NULL,
     @nivel_fitness VARCHAR(20) = 'Principiante',
     @peso TPeso = 70.0,
     @testing bit = 0
@@ -125,6 +126,28 @@ BEGIN
             END;
         END
 
+        -- Insertar condiciones médicas si se proporcionaron
+        IF @condiciones_medicas IS NOT NULL AND LTRIM(RTRIM(@condiciones_medicas)) <> ''
+        BEGIN
+            -- Validar que los ids existan en la tabla Condicion_Medica
+            IF EXISTS (
+                SELECT value
+                FROM STRING_SPLIT(@condiciones_medicas, ',') s
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM Condicion_Medica cm WHERE cm.id_condicion_medica = TRY_CAST(s.value AS INT)
+                )
+            )
+            BEGIN
+                THROW 51040, N'Una o más condiciones médicas no existen.', 1;
+            END
+
+            -- Insertar en la tabla de relación
+            INSERT INTO Cliente_Condicion_Medica (cedula_cliente, id_condicion_medica)
+            SELECT @cedula, TRY_CAST(value AS INT)
+            FROM STRING_SPLIT(@condiciones_medicas, ',')
+            WHERE TRY_CAST(value AS INT) IS NOT NULL;
+        END
+
         -- Bloque para testing
         IF @testing = 1
         BEGIN
@@ -140,7 +163,7 @@ BEGIN
     BEGIN CATCH
         IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-        RAISERROR(@ErrorMessage, 16, 1);
+        Throw 51000, @ErrorMessage,1;
     END CATCH
 END;
 GO
@@ -157,24 +180,27 @@ CREATE PROCEDURE sp_InsertarEntrenador
     @correo VARCHAR(50),
     @fecha_nacimiento DATE,
     @experiencia VARCHAR(255) = NULL,
-    @especialidades VARCHAR(500) = NULL, -- Lista separada por comas
-    @telefonos VARCHAR(500) = NULL -- Lista separada por comas: '88887777,22223333'
+    @especialidades VARCHAR(500) = NULL,
+    @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
+    @testing bit = 0
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    DECLARE @id_genero TINYINT;
+    SET XACT_ABORT ON;
 
     BEGIN TRY
         BEGIN TRANSACTION;
 
+        DECLARE @id_genero TINYINT;
+
+        exec sp_validarDatosPersona
+        @cedula,@nombre,@apellido1,@apellido2,
+        @genero_nombre,@contrasena,@correo,@fecha_nacimiento;
+
         -- Obtener ID del género
         SELECT @id_genero = id FROM Genero WHERE nombre = @genero_nombre;
         IF @id_genero IS NULL
-        BEGIN
-            RAISERROR('Género no válido. Use: Masculino o Femenino', 16, 1);
-            RETURN;
-        END
+            THROW 51029, N'Género no válido. Use: Masculino o Femenino', 1;
 
         -- Insertar persona
         INSERT INTO Persona (cedula, nombre, apellido1, apellido2, genero, contraseña, correo, fecha_nacimiento)
@@ -212,32 +238,54 @@ BEGIN
             END
         END
 
-        -- Manejar teléfonos (código similar al de cliente)
+
+        -- Insertar y relacionar teléfonos si se proporcionaron
         IF @telefonos IS NOT NULL
         BEGIN
-            DECLARE @telefono VARCHAR(8);
-            DECLARE @id_telefono INT;
-            SET @pos = 1;
+            DECLARE @SplitTelefonos TABLE (numero_telefono VARCHAR(8));
+            DECLARE @Conflictos TABLE (numero_telefono VARCHAR(8));
 
-            WHILE @pos <= LEN(@telefonos)
+            -- Poblar SplitTelefonos
+            INSERT INTO @SplitTelefonos (numero_telefono)
+            SELECT TRIM(value)
+            FROM STRING_SPLIT(@telefonos, ',')
+            WHERE value <> '';  -- Evita cadenas vacías
+
+            -- Poblar Conflictos
+            INSERT INTO @Conflictos (numero_telefono)
+            SELECT s.numero_telefono
+            FROM @SplitTelefonos s
+            WHERE EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona = @cedula  -- Duplicado para la misma persona
+            )
+            OR EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona <> @cedula  -- Asignado a otra persona
+            );
+
+            IF EXISTS (SELECT 1 FROM @Conflictos)
             BEGIN
-                SET @next_comma = CHARINDEX(',', @telefonos, @pos);
-                IF @next_comma = 0 SET @next_comma = LEN(@telefonos) + 1;
-
-                SET @telefono = LTRIM(RTRIM(SUBSTRING(@telefonos, @pos, @next_comma - @pos)));
-
-                SELECT @id_telefono = id_telefono FROM Telefono WHERE numero_telefono = @telefono;
-
-                IF @id_telefono IS NULL
-                BEGIN
-                    INSERT INTO Telefono (numero_telefono) VALUES (@telefono);
-                    SET @id_telefono = SCOPE_IDENTITY();
-                END
-
-                INSERT INTO Telefono_Persona (id_telefono, cedula_persona) VALUES (@id_telefono, @cedula);
-
-                SET @pos = @next_comma + 1;
+                DECLARE @mensaje_error NVARCHAR(1000) = N'Error en teléfonos: Los siguientes números ya están asignados: ' +
+                    (SELECT STRING_AGG(numero_telefono, ', ') FROM @Conflictos);
+                THROW 51032, @mensaje_error, 1;  -- Lanza error con detalles
             END
+            ELSE
+            BEGIN
+                INSERT INTO Telefono (numero_telefono, cedula_persona)
+                SELECT s.numero_telefono, @cedula
+                FROM @SplitTelefonos s;
+            END;
+        END
+
+        -- Bloque para testing
+        IF @testing = 1
+        BEGIN
+            PRINT 'Datos del Entrenador: ' + @nombre + ' ' + @apellido1 + ' correctos';
+            PRINT 'Pero los datos no fueron almacenados (testing = 1)';
+            THROW 51033, N'Modo testing activado: cambios no guardados para evitar alteraciones en la base de datos.', 1;  -- Lanza error para cancelar transacción
         END
 
         COMMIT TRANSACTION;
@@ -247,13 +295,12 @@ BEGIN
     BEGIN CATCH
         IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-        RAISERROR(@ErrorMessage, 16, 1);
+        THROW 51000, @ErrorMessage, 1;
     END CATCH
 END;
 GO
 
 -- Consultar información completa de cliente
-
 CREATE PROCEDURE sp_ConsultarCliente
     @cedula VARCHAR(11) = NULL,
     @correo VARCHAR(50) = NULL
@@ -275,9 +322,8 @@ BEGIN
         -- Teléfonos concatenados
         STUFF((
             SELECT ', ' + t.numero_telefono
-            FROM Telefono_Persona tp
-            INNER JOIN Telefono t ON tp.id_telefono = t.id_telefono
-            WHERE tp.cedula_persona = p.cedula
+            FROM Telefono t
+            WHERE t.cedula_persona = p.cedula
             FOR XML PATH('')
         ), 1, 2, '') AS telefonos,
         -- Objetivos concatenados
@@ -308,58 +354,32 @@ CREATE PROCEDURE sp_InsertarAdministrativo
     @contrasena VARCHAR(20),
     @correo VARCHAR(50),
     @fecha_nacimiento DATE,
-
-    -- JSON array de IDs de permiso: '[1,2,3]'
-    @permisos         NVARCHAR(100) = NULL,
-
-    -- JSON array de teléfonos: '["88887777","22223333"]'
+    @permisos NVARCHAR(100) = NULL,
     @telefonos VARCHAR(500) = NULL, -- Lista separada por comas: '88887777,22223333'
-
-    --Datos de tabla Administrativo
-    @cargo VARCHAR(30)
+    @cargo VARCHAR(30),
+    @testing bit = 1
 AS
 BEGIN
     SET NOCOUNT ON;
     SET XACT_ABORT ON;
 
-    -- 0) VALIDACIÓN DE PARÁMETROS OBLIGATORIOS
-    -- CONCAT(@p,'') convierte NULL en '', TRIM(…) quita espacios, LEN=0
-    IF LEN(TRIM(CONCAT(@cedula,''))) = 0
-        THROW 51020, N'La cédula es obligatoria.',1;
-    IF LEN(TRIM(CONCAT(@nombre,''))) = 0
-        THROW 51021, N'El nombre es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@apellido1,''))) = 0
-        THROW 51022, N'El primer apellido es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@apellido2,''))) = 0
-        THROW 51023, N'El segundo apellido es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@genero_nombre,''))) = 0
-        THROW 51024, N'El género es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@contrasena,''))) = 0
-        THROW 51025, N'La contraseña es obligatoria.',1;
-    IF LEN(TRIM(CONCAT(@correo,''))) = 0
-        THROW 51026, N'El correo es obligatorio.',1;
-    IF LEN(TRIM(CONCAT(@fecha_nacimiento,''))) = 0
-        THROW 51027, N'La fecha de nacimiento es obligatoria.',1;
-    IF LEN(TRIM(CONCAT(@cargo,''))) = 0
-    THROW 51028, N'El cargo es obligatorio.',1;
-
-    DECLARE @id_genero TINYINT;
-
     BEGIN TRY
         BEGIN TRANSACTION;
+
+        exec sp_validarDatosPersona
+        @cedula,@nombre,@apellido1,@apellido2,
+        @genero_nombre,@contrasena,@correo,@fecha_nacimiento;
+
+        DECLARE @id_genero TINYINT;
 
         -- Obtener ID del género
         SELECT @id_genero = id FROM Genero WHERE nombre = @genero_nombre;
         IF @id_genero IS NULL
-        BEGIN
-            RAISERROR('Género no válido. Use: Masculino o Femenino', 16, 1);
-            RETURN;
-        END
+            THROW 51029, N'Género no válido. Use: Masculino o Femenino', 1;
+
         IF LEN(TRIM(@nombre)) = 0
-        BEGIN
-            RAISERROR('El campo del nombre debne ser especificado', 16, 1);
-            RETURN;
-        END
+            THROW 51034, N'El campo del nombre debne ser especificado', 1;
+
         -- Insertar persona
         INSERT INTO Persona (cedula, nombre, apellido1, apellido2, genero, contraseña, correo, fecha_nacimiento)
         VALUES (@cedula, @nombre, @apellido1, @apellido2, @id_genero, @contrasena, @correo, @fecha_nacimiento);
@@ -368,10 +388,8 @@ BEGIN
         DECLARE @id_cargo INT;
         select @id_cargo = id_cargo from Cargo where nombre = @cargo
         if @id_cargo is NULL
-        begin
-            raiserror('El cargo específicado no existe',16,1);
-            return;
-        end
+            THROW 51035, N'El cargo específicado no existe', 1;
+
         -- Insertar Administrativo
         INSERT INTO Administrativo (cedula_administrativo, id_cargo)
         VALUES (@cedula, @id_cargo);
@@ -399,34 +417,55 @@ BEGIN
                 WHERE p.id_permiso = j.id_permiso
               );
             END
-        -- Manejar teléfonos (código similar al de cliente)
+
+
+        -- Insertar y relacionar teléfonos si se proporcionaron
         IF @telefonos IS NOT NULL
         BEGIN
-            IF ISJSON(@telefonos) = 0
-                THROW 51003,
-                  N'@telefonos debe ser un JSON válido: ''["88887777","22223333"]''.', 1;
+            DECLARE @SplitTelefonos TABLE (numero_telefono VARCHAR(8));
+            DECLARE @Conflictos TABLE (numero_telefono VARCHAR(8));
 
-            -- 5.1) Extraer la lista de números a un table variable
-            DECLARE @Phones TABLE (numero VARCHAR(8) PRIMARY KEY);
-            INSERT INTO @Phones(numero)
-            SELECT TRIM([value])
-            FROM OPENJSON(@telefonos);
+            -- Poblar SplitTelefonos
+            INSERT INTO @SplitTelefonos (numero_telefono)
+            SELECT TRIM(value)
+            FROM STRING_SPLIT(@telefonos, ',')
+            WHERE value <> '';  -- Evita cadenas vacías
 
-            -- 5.2) Insertar los que faltan en Telefono
-            INSERT INTO Telefono (numero_telefono)
-            SELECT p.numero
-            FROM @Phones AS p
-            LEFT JOIN Telefono AS t
-            ON t.numero_telefono = p.numero
-            WHERE t.id_telefono IS NULL;
+            -- Poblar Conflictos
+            INSERT INTO @Conflictos (numero_telefono)
+            SELECT s.numero_telefono
+            FROM @SplitTelefonos s
+            WHERE EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona = @cedula  -- Duplicado para la misma persona
+            )
+            OR EXISTS (
+                SELECT 1 FROM Telefono t
+                WHERE t.numero_telefono = s.numero_telefono
+                    AND t.cedula_persona <> @cedula  -- Asignado a otra persona
+            );
 
-            -- 5.3) Relacionar todos los teléfonos con la persona
-            INSERT INTO Telefono_Persona
-            (id_telefono, cedula_persona)
-            SELECT t.id_telefono, @cedula
-            FROM @Phones AS p
-            JOIN Telefono AS t
-            ON t.numero_telefono = p.numero;
+            IF EXISTS (SELECT 1 FROM @Conflictos)
+            BEGIN
+                DECLARE @mensaje_error NVARCHAR(1000) = N'Error en teléfonos: Los siguientes números ya están asignados: ' +
+                    (SELECT STRING_AGG(numero_telefono, ', ') FROM @Conflictos);
+                THROW 51032, @mensaje_error, 1;  -- Lanza error con detalles
+            END
+            ELSE
+            BEGIN
+                INSERT INTO Telefono (numero_telefono, cedula_persona)
+                SELECT s.numero_telefono, @cedula
+                FROM @SplitTelefonos s;
+            END;
+        END
+
+        -- Bloque para testing
+        IF @testing = 1
+        BEGIN
+            PRINT 'Datos del Administrador: ' + @nombre + ' ' + @apellido1 + ' correctos';
+            PRINT 'Pero los datos no fueron almacenados (testing = 1)';
+            THROW 51033, N'Modo testing activado: cambios no guardados para evitar alteraciones en la base de datos.', 1;  -- Lanza error para cancelar transacción
         END
 
         COMMIT TRANSACTION;
@@ -436,7 +475,7 @@ BEGIN
     BEGIN CATCH
         IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
         DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
-        RAISERROR(@ErrorMessage, 16, 1);
+        THROW 51000, @ErrorMessage, 1;
     END CATCH
 END;
 GO
