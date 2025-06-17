@@ -50,7 +50,7 @@ const loginSearchSchema = {
 }
 
 export const Route = createFileRoute('/auth/login')({
-  validateSearch: (search): typeof loginSearchSchema => ({
+  validateSearch: (search): typeof loginSearchSchema | undefined => ({
     redirect: z.string().optional().parse(search.redirect),
     error: z.string().optional().parse(search.error),
   }),

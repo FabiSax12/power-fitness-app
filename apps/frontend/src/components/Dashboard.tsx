@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
 import { Avatar } from "@heroui/avatar";
 import { Card, CardBody, CardHeader } from "@heroui/card";
 import { Button } from "@heroui/button";
@@ -21,9 +21,9 @@ import {
 import type { VWDashboardCliente } from '@/core/types/vw_DashboardCliente';
 import { useNavigate } from '@tanstack/react-router';
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
+const containerVariants: Variants = {
+  inactive: { opacity: 0 },
+  active: {
     opacity: 1,
     transition: {
       staggerChildren: 0.1
@@ -31,9 +31,9 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
+const itemVariants: Variants = {
+  inactive: { y: 20, opacity: 0 },
+  active: {
     y: 0,
     opacity: 1,
     transition: {
@@ -72,7 +72,7 @@ const PowerFitnessDashboard = ({ clientData }: Props) => {
 
   const calcularProgresoMes = () => {
     const diasEnMes = 30;
-    const diasTranscurridos = diasEnMes - clientData.dias_restantes;
+    const diasTranscurridos = diasEnMes - (clientData.dias_restantes ?? 0);
     return Math.min((diasTranscurridos / diasEnMes) * 100, 100);
   };
 
@@ -93,7 +93,7 @@ const PowerFitnessDashboard = ({ clientData }: Props) => {
                 ¡Hola, {clientData.nombre_completo.split(' ')[0]}!
               </h1>
               <p className="text-default-500">
-                Miembro desde el {new Date(clientData.membresia_inicio).toLocaleDateString('es-CR', { dateStyle: 'medium' })}.
+                Miembro desde el {clientData.membresia_inicio ? new Date(clientData.membresia_inicio).toLocaleDateString('es-CR', { dateStyle: 'medium' }) : 'Fecha desconocida'}.
               </p>
 
             </div>
@@ -162,13 +162,13 @@ const PowerFitnessDashboard = ({ clientData }: Props) => {
                       <div>
                         <p className="text-sm text-default-500">Precio mensual</p>
                         <p className="text-xl font-bold text-success">
-                          ₡{clientData.precio_membresia.toLocaleString()}
+                          ₡{clientData.precio_membresia?.toLocaleString() || 0}
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-default-500">Vence el</p>
                         <p className="text-lg font-semibold">
-                          {new Date(clientData.membresia_vencimiento).toLocaleDateString('es-CR', { dateStyle: 'medium' })}
+                          {clientData.membresia_vencimiento ? new Date(clientData.membresia_vencimiento).toLocaleDateString('es-CR', { dateStyle: 'medium' }) : 'N/A'}
                         </p>
                       </div>
                     </div>
@@ -234,17 +234,17 @@ const PowerFitnessDashboard = ({ clientData }: Props) => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="text-center p-4 border border-divider rounded-lg">
                       <div className="text-2xl font-bold text-success">
-                        ₡{clientData.total_pagado.toLocaleString()}
+                        ₡{clientData.total_pagado?.toLocaleString() || 0}
                       </div>
                       <div className="text-sm text-default-500">Total Pagado</div>
                     </div>
                     <div className="text-center p-4 border border-divider rounded-lg">
-                      <div className="text-2xl font-bold text-primary">{clientData.cantidad_pagos}</div>
+                      <div className="text-2xl font-bold text-primary">{clientData.cantidad_pagos ?? 0}</div>
                       <div className="text-sm text-default-500">Pagos Realizados</div>
                     </div>
                     <div className="text-center p-4 border border-divider rounded-lg">
                       <div className="text-lg font-bold text-foreground">
-                        {new Date(clientData.ultimo_pago).toLocaleDateString('es-CR', { dateStyle: 'medium' })}
+                        {clientData.ultimo_pago ? new Date(clientData.ultimo_pago).toLocaleDateString('es-CR', { dateStyle: 'medium' }) : 'N/A'}
                       </div>
                       <div className="text-sm text-default-500">Último Pago</div>
                     </div>
@@ -400,11 +400,11 @@ const PowerFitnessDashboard = ({ clientData }: Props) => {
             <CardBody>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold">₡{clientData.valor_total_cliente.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">₡{clientData.valor_total_cliente?.toLocaleString() ?? 0}</div>
                   <div className="text-sm opacity-90">Valor Total Como Cliente</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{clientData.dias_restantes}</div>
+                  <div className="text-2xl font-bold">{clientData.dias_restantes ?? 0}</div>
                   <div className="text-sm opacity-90">Días Restantes</div>
                 </div>
                 <div>

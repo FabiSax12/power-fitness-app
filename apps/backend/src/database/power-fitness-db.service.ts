@@ -42,6 +42,9 @@ export class PowerFitnessDbService {
   }
 
   async consultarCliente(cedula?: string, correo?: string): Promise<QueryResult> {
+
+    this.logger.debug(`Consultando cliente: ${cedula || 'sin cédula'}, correo: ${correo || 'sin correo'}`);
+
     return await this.db.executeProcedure({ name: 'sp_ConsultarCliente', params: { cedula, correo } });
   }
 
@@ -74,14 +77,14 @@ export class PowerFitnessDbService {
         frecuencia,
         monto,
         precio
-    FROM Pago p
-    JOIN Membresia m ON p.id_membresia = m.id_membresia
-    JOIN Tipo_Membresia tm ON m.id_tipo_membresia = tm.id_tipo_membresia
-    JOIN Frecuencia f ON tm.id_frecuencia = f.id_frecuencia
-    JOIN Estado_Membresia em ON m.id_estado_membresia = em.id_estado_membresia
-    JOIN Estado_Pago ep ON p.id_estado = ep.id_estado_pago
-    JOIN Metodo_Pago mp ON p.id_metodo_pago = mp.id_metodo_pago
-    WHERE m.cedula_cliente = '3-0234-0567'
+      FROM Pago p
+      JOIN Membresia m ON p.id_membresia = m.id_membresia
+      JOIN Tipo_Membresia tm ON m.id_tipo_membresia = tm.id_tipo_membresia
+      JOIN Frecuencia f ON tm.id_frecuencia = f.id_frecuencia
+      JOIN Estado_Membresia em ON m.id_estado_membresia = em.id_estado_membresia
+      JOIN Estado_Pago ep ON p.id_estado = ep.id_estado_pago
+      JOIN Metodo_Pago mp ON p.id_metodo_pago = mp.id_metodo_pago
+      WHERE m.cedula_cliente = @cedula
       `,
       { cedula }
     );

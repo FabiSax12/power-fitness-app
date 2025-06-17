@@ -1,11 +1,19 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ClientesService } from './clientes.service';
+import { CreateUserDto } from './dtos/create-user.dto';
 
 @Controller('clientes')
 export class ClientesController {
   constructor(
     private readonly clientesService: ClientesService
   ) { }
+
+  @Post()
+  async create(
+    @Body() body: CreateUserDto
+  ) {
+    return this.clientesService.create(body);
+  }
 
   @Get(":cedula")
   async findAll(
