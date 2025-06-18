@@ -28,9 +28,6 @@ CREATE TABLE Membresia (
     fecha_vencimiento DATE NOT NULL,
     id_estado_membresia INT NOT NULL DEFAULT 1,
 
-    -- Validaciones
-    CONSTRAINT chk_fechas_membresia CHECK (fecha_vencimiento > fecha_inicio),
-
     -- Foreign Keys
     CONSTRAINT fk_membresia_cliente FOREIGN KEY (cedula_cliente) REFERENCES Cliente(cedula_cliente),
     CONSTRAINT fk_membresia_tipo FOREIGN KEY (id_tipo_membresia) REFERENCES Tipo_Membresia(id_tipo_membresia),

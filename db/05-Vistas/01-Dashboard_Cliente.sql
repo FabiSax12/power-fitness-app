@@ -30,9 +30,10 @@ SELECT
 
     -- Análisis de situación de membresía
     CASE
+        WHEN m.id_membresia IS NULL THEN N'SIN MEMBRESÍA'
         WHEN m.fecha_vencimiento < GETDATE() THEN 'VENCIDA'
         WHEN DATEDIFF(DAY, GETDATE(), m.fecha_vencimiento) <= 7 THEN 'POR VENCER'
-        WHEN DATEDIFF(DAY, GETDATE(), m.fecha_vencimiento) <= 30 THEN 'PRÓXIMA A VENCER'
+        WHEN DATEDIFF(DAY, GETDATE(), m.fecha_vencimiento) <= 30 THEN N'PRÓXIMA A VENCER'
         ELSE 'VIGENTE'
     END AS situacion_membresia,
 

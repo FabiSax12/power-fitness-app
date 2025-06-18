@@ -74,7 +74,7 @@ EXEC sp_InsertarEntrenador
     @fecha_nacimiento = '1992-01-18',
     @experiencia = '5 años enseñando baile fitness y coreografías grupales.',
     @especialidades = 'Zumba,Jiujitsu',
-    @telefonos = '83456789';
+    @telefonos = '83456710';
 
 EXEC sp_InsertarEntrenador
     @cedula = '3-7890-1234',
@@ -87,7 +87,7 @@ EXEC sp_InsertarEntrenador
     @fecha_nacimiento = '1989-06-30',
     @experiencia = '6 años como instructor de baile fitness. Bailarín profesional con formación en salsa y merengue.',
     @especialidades = 'Zumba',
-    @telefonos = '82345678,26123456';
+    @telefonos = '82345679,26123456';
 
 EXEC sp_InsertarEntrenador
     @cedula = '2-8901-2345',
@@ -139,7 +139,7 @@ EXEC sp_InsertarEntrenador
     @fecha_nacimiento = '1991-10-07',
     @experiencia = '7 años en CrossFit y entrenamiento de alta intensidad.',
     @especialidades = 'CrossFit',
-    @telefonos = '88234567,24567890';
+    @telefonos = '88234568,24567890';
 
 EXEC sp_InsertarEntrenador
     @cedula = '1-2345-6789',
@@ -152,7 +152,7 @@ EXEC sp_InsertarEntrenador
     @fecha_nacimiento = '1982-02-28',
     @experiencia = '15 años en la industria fitness. Especialista en entrenamiento con pesas y musculación.',
     @especialidades = 'Gimnasio',
-    @telefonos = '87123456,22890123';
+    @telefonos = '87123456,23890123';
 
 EXEC sp_InsertarEntrenador
     @cedula = '3-3456-7890',
@@ -178,7 +178,7 @@ EXEC sp_InsertarEntrenador
     @fecha_nacimiento = '1988-11-19',
     @experiencia = '6 años en jiujitsu brasileño y grappling. Cinturón púrpura.',
     @especialidades = 'Jiujitsu',
-    @telefonos = '85456789,23123456';
+    @telefonos = '85456790,23123456';
 
 EXEC sp_InsertarEntrenador
     @cedula = '1-5678-9012',

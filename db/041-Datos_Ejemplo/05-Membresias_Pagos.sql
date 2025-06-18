@@ -53,126 +53,6 @@ INSERT INTO Beneficio_Tipo_Membresia (id_tipo_membresia, id_beneficio) VALUES
 (6, 1), (6, 2), (6, 3), (6, 4), (6, 5), (6, 6), (6, 7), (6, 8),
 (7, 2), (7, 6);
 
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0234-0567',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-05-15',
---     @metodo_pago = 'Tarjeta de Crédito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0456-0789',
---     @tipo_membresia = 'Premium Anual',
---     @fecha_inicio = '2025-01-01',
---     @metodo_pago = 'Transferencia Bancaria';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0567-0890',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-06-01',
---     @metodo_pago = 'SINPE Móvil';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '3-0234-0567',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-04-10',
---     @metodo_pago = 'Tarjeta de Débito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0789-0123',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-05-20',
---     @metodo_pago = 'Efectivo';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0890-0234',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-05-05',
---     @metodo_pago = 'Tarjeta de Crédito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '3-0456-0678',
---     @tipo_membresia = 'Básica Anual',
---     @fecha_inicio = '2025-03-15',
---     @metodo_pago = 'Transferencia Bancaria';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0567-0789',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-05-28',
---     @metodo_pago = 'SINPE Móvil';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0123-0456',
---     @tipo_membresia = 'Estudiante',
---     @fecha_inicio = '2025-05-25',
---     @metodo_pago = 'Efectivo';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0901-0345',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-04-01',
---     @metodo_pago = 'Tarjeta de Débito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0345-0678',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-05-08',
---     @metodo_pago = 'Tarjeta de Crédito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '3-0789-0123',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-05-12',
---     @metodo_pago = 'SINPE Móvil';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0678-0901',
---     @tipo_membresia = 'Estudiante',
---     @fecha_inicio = '2025-03-01',
---     @metodo_pago = 'Efectivo';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0345-0789',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-03-15',
---     @metodo_pago = 'Tarjeta de Débito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0678-0234',
---     @tipo_membresia = 'Estudiante',
---     @fecha_inicio = '2025-04-20',
---     @metodo_pago = 'Efectivo';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '3-0123-0567',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-06-02',
---     @metodo_pago = 'Tarjeta de Crédito';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0567-0123',
---     @tipo_membresia = 'Premium Mensual',
---     @fecha_inicio = '2025-06-03',
---     @metodo_pago = 'SINPE Móvil';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '1-0234-0890',
---     @tipo_membresia = 'Premium Anual',
---     @fecha_inicio = '2025-02-01',
---     @metodo_pago = 'Transferencia Bancaria';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '3-0678-0234',
---     @tipo_membresia = 'Estudiante',
---     @fecha_inicio = '2025-05-18',
---     @metodo_pago = 'Efectivo';
---
--- EXEC sp_CrearMembresia
---     @cedula_cliente = '2-0890-0567',
---     @tipo_membresia = 'Básica Mensual',
---     @fecha_inicio = '2025-05-30',
---     @metodo_pago = 'Tarjeta de Débito';
-
 -- ===============================================================
 -- DATOS HISTÓRICOS PARA VISTA FINANCIERA (6 MESES)
 -- Usando procedimientos almacenados existentes
@@ -180,7 +60,7 @@ INSERT INTO Beneficio_Tipo_Membresia (id_tipo_membresia, id_beneficio) VALUES
 -- ===============================================================
 
 -- ===============================================================
--- ENERO 2025 - Inicio del año, muchas inscripciones nuevas
+-- ENERO 2025
 -- ===============================================================
 
 -- Semana 1 de Enero (Resoluciones de año nuevo)
@@ -309,7 +189,7 @@ EXEC sp_CrearMembresia
     @metodo_pago = 'Efectivo';
 
 -- ===============================================================
--- MARZO 2025 - Mes fuerte, promociones de primavera
+-- MARZO 2025
 -- ===============================================================
 
 -- Renovaciones de febrero
@@ -373,7 +253,7 @@ EXEC sp_RenovarMembresia
     @cedula_cliente = '3-0678-0234',
     @metodo_pago = 'Efectivo';
 
--- Nuevos clientes marzo (época de ejercicio para el verano)
+-- Nuevos clientes marzo
 EXEC sp_CrearMembresia
     @cedula_cliente = '1-0234-0890',
     @tipo_membresia = 'VIP Mensual',
@@ -402,7 +282,7 @@ EXEC sp_CrearMembresia
 -- ABRIL 2025 - Mantenimiento de clientes existentes
 -- ===============================================================
 
--- Renovaciones abril (muchas renovaciones por ser mes estable)
+-- Renovaciones abril
 EXEC sp_RenovarMembresia
     @fecha_renovacion = '2025-04-12',
     @cedula_cliente = '1-0234-0567',
@@ -486,10 +366,10 @@ EXEC sp_CrearMembresia
     @metodo_pago = 'SINPE Móvil';
 
 -- ===============================================================
--- MAYO 2025 - Preparación para el verano
+-- MAYO 2025
 -- ===============================================================
 
--- Muchas renovaciones (temporada alta pre-verano)
+-- Muchas renovaciones
 EXEC sp_RenovarMembresia
     @fecha_renovacion = '2025-05-12',
     @cedula_cliente = '1-0234-0567',
@@ -571,7 +451,7 @@ EXEC sp_RenovarMembresia
     @metodo_pago = 'SINPE Móvil';
 
 -- ===============================================================
--- JUNIO 2025 - Mes actual, alta demanda veraniega
+-- JUNIO 2025
 -- ===============================================================
 
 -- Renovaciones de mayo
@@ -660,7 +540,7 @@ EXEC sp_RenovarMembresia
 -- (Para mostrar variedad en tipos de membresía)
 -- ===============================================================
 
--- Algunos pases diarios en diferentes meses para turistas/visitantes ocasionales
+-- Algunos pases diarios en diferentes meses para visitantes ocasionales
 EXEC sp_CrearMembresia
     @cedula_cliente = '1-0234-0567',
     @tipo_membresia = 'Pase Diario',

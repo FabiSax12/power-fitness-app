@@ -38,10 +38,17 @@ export const Route = createFileRoute('/_authenticated/dashboard/admin/financiero
         throw new Error('Failed to load financial data');
       }
 
+      const membershipTypeResponse = await fetch(`http://localhost:3000/api/membresias/tipos/usuarios`);
+      if (!membershipTypeResponse.ok) {
+        throw new Error('Failed to load membership type data');
+      }
+
       const data = (await response.json()).recordset as VWAnalisisFinanciero[];
+      const membershipTypeData = await membershipTypeResponse.json();
 
       return {
         financialData: data,
+        membershipTypeData,
         userInfo: userData
       };
 
@@ -71,7 +78,7 @@ export const Route = createFileRoute('/_authenticated/dashboard/admin/financiero
 
 function RouteComponent() {
 
-  const { financialData, userInfo } = useLoaderData({
+  const { financialData, userInfo, membershipTypeData } = useLoaderData({
     from: Route.id
   });
 
@@ -98,7 +105,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <FinancialDashboard financialData={financialData} />
+      <FinancialDashboard financialData={financialData} datosPorTipoMembresia={membershipTypeData} />
     </div>
   );
 }
