@@ -52,6 +52,24 @@ export class MembresiasService {
     `);
   }
 
+  findUsuariosByTipos() {
+    return this.dbService.executeQuery(`
+      SELECT
+        tm.nombre AS tipo,
+        SUM(p.monto) AS ingresos,
+        COUNT(DISTINCT c.cedula_cliente) AS clientes,
+        COUNT(p.num_recibo) AS cantidad_pagos,
+        tm.precio AS precio,
+        f.frecuencia AS frecuencia
+      FROM Tipo_Membresia tm
+      LEFT JOIN Membresia m ON m.id_tipo_membresia = tm.id_tipo_membresia
+      LEFT JOIN Pago p ON m.id_membresia = p.id_membresia
+      LEFT JOIN Cliente c ON m.cedula_cliente = c.cedula_cliente
+      LEFT JOIN Frecuencia f ON tm.id_frecuencia = f.id_frecuencia
+      GROUP BY tm.nombre, tm.precio, f.frecuencia;
+    `)
+  }
+
   findAllFrecuencias() {
     return this.dbService.executeQuery(
       `SELECT

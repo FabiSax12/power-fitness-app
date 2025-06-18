@@ -58,6 +58,12 @@ export class MembresiasController {
     };
   }
 
+  @Get('tipos/usuarios')
+  async findUsuariosByTipo() {
+    const tipos = await this.membresiasService.findUsuariosByTipos();
+    return tipos.recordset
+  }
+
   @Get('tipos/:id/beneficios')
   async findBeneficiosByTipo(@Param('id', ParseIntPipe) id: number) {
     const beneficios = await this.membresiasService.findBeneficiosByTipo(id);

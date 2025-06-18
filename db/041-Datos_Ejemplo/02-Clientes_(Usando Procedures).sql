@@ -652,22 +652,6 @@ EXEC sp_InsertarCliente
     @nivel_fitness = 'Avanzado',
     @peso = 88.9;
 
--- Corrección para el registro con errores
-EXEC sp_InsertarCliente
-    @cedula = '2-2934-9999',
-    @nombre = 'Rodrigo',
-    @apellido1 = 'Vargas',
-    @apellido2 = 'Herrera',
-    @genero_nombre = 'Masculino',
-    @contrasena = 'RodV2934!',
-    @correo = 'rodrigo.vargas@hotmail.com',
-    @fecha_nacimiento = '1993-07-07',
-    @nivel_fitness = 'Avanzado',
-    @peso = 81.7;
-
-select cedula, nombre from Persona,Cliente where cedula = cedula_cliente
-select * from Cliente order by peso
-select * from Condicion_Medica
 -- Condiciones Médicas
 INSERT INTO Cliente_Condicion_Medica (cedula_cliente, id_condicion_medica) VALUES
 ('1-0234-0567', 4),
