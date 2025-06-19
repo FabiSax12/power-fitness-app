@@ -37,7 +37,7 @@ const navigationConfig: Record<UserType, Array<{ label: string; href: string; ic
     { label: 'Mis Rutinas', href: '/dashboard/cliente/rutinas' },
     { label: 'Mi Progreso', href: '/dashboard/cliente/progreso' },
     { label: 'Clases', href: '/dashboard/cliente/clases' },
-    { label: 'Membresía', href: '/dashboard/cliente/membresia' },
+    // { label: 'Membresía', href: '/dashboard/cliente/membresia' },
     { label: 'Pagos', href: '/dashboard/cliente/pagos' },
   ],
   entrenador: [
@@ -49,14 +49,14 @@ const navigationConfig: Record<UserType, Array<{ label: string; href: string; ic
     { label: 'Reportes', href: '/dashboard/entrenador/reportes' },
   ],
   administrativo: [
-    { label: 'Dashboard', href: '/dashboard/admin' },
+    // { label: 'Dashboard', href: '/dashboard/admin' },
     { label: 'Financiero', href: '/dashboard/admin/financiero' },
     { label: 'Usuarios', href: '/dashboard/admin/usuarios' },
     { label: 'Membresías', href: '/dashboard/admin/membresias' },
-    { label: 'Gimnasio', href: '/dashboard/admin/gimnasio' },
-    { label: 'Ejercicios', href: '/dashboard/admin/ejercicios' },
-    { label: 'Reportes', href: '/dashboard/admin/reportes' },
-    { label: 'Configuración', href: '/dashboard/admin/configuracion' },
+    // { label: 'Gimnasio', href: '/dashboard/admin/gimnasio' },
+    // { label: 'Ejercicios', href: '/dashboard/admin/ejercicios' },
+    // { label: 'Reportes', href: '/dashboard/admin/reportes' },
+    // { label: 'Configuración', href: '/dashboard/admin/configuracion' },
   ],
 }
 
