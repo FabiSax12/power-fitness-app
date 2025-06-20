@@ -38,6 +38,12 @@ export class EntrenadoresService {
     })
   }
 
+  getPerformance() {
+    return this.dbService.executeQuery(`
+      SELECT * FROM vw_PerformanceEntrenadores;
+    `)
+  }
+
   update(id: number, updateEntrenadoreDto: UpdateEntrenadoreDto) {
     return `This action updates a #${id} entrenadore`;
   }

@@ -28,6 +28,13 @@ export class EntrenadoresController {
     return clients.recordset;
   }
 
+  @Get('performance')
+  async getPerformance() {
+    console.debug('Fetching performance data for trainers');
+    const performance = await this.entrenadoresService.getPerformance();
+    return performance.recordset;
+  }
+
   @Patch(':cedula')
   update(@Param('cedula') cedula: string, @Body() updateEntrenadoreDto: UpdateEntrenadoreDto) {
     return this.entrenadoresService.update(+cedula, updateEntrenadoreDto);
