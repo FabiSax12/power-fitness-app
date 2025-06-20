@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ClientesService } from './clientes.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { PowerFitnessDbService } from 'src/database/power-fitness-db.service';
 
 @Controller('clientes')
 export class ClientesController {
   constructor(
-    private readonly clientesService: ClientesService
+    private readonly clientesService: ClientesService,
+    private readonly powerFitnessService: PowerFitnessDbService
   ) { }
 
   @Post()
@@ -15,8 +17,15 @@ export class ClientesController {
     return this.clientesService.create(body);
   }
 
+  @Get()
+  async findAll() {
+    const clientes = await this.powerFitnessService.allUsers();
+
+    return clientes.data.clientes
+  }
+
   @Get(":cedula")
-  async findAll(
+  async findOne(
     @Param('cedula') cedula: string
   ) {
     return this.clientesService.findOneByCedula(cedula);

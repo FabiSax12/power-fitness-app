@@ -10,7 +10,7 @@ export class PowerFitnessDbService {
 
   async allUsers() {
     const admins = await this.db.executeQuery('SELECT * FROM Administrativo JOIN Persona ON Administrativo.cedula_administrativo = Persona.cedula');
-    const clients = await this.db.executeQuery('SELECT * FROM Cliente JOIN Persona ON Cliente.cedula_cliente = Persona.cedula');
+    const clients = await this.db.executeQuery('SELECT * FROM Cliente JOIN Persona ON Cliente.cedula_cliente = Persona.cedula LEFT JOIN Nivel_Fitness nf ON Cliente.id_nivel_fitness = nf.id_nivel_fitness');
     const trainers = await this.db.executeQuery('SELECT * FROM Entrenador JOIN Persona ON Entrenador.cedula_entrenador = Persona.cedula');
 
     return {

@@ -12,6 +12,8 @@ import { UsersModule } from './modules/users/users.module';
 import { MembresiasModule } from './modules/membresias/membresias.module';
 import { BeneficiosModule } from './modules/beneficios/beneficios.module';
 import { ProgresoModule } from './modules/progreso/progreso.module';
+import { EntrenadoresModule } from './modules/entrenadores/entrenadores.module';
+import { EjerciciosModule } from './modules/ejercicios/ejercicios.module';
 
 @Module({
   imports: [
@@ -47,6 +49,10 @@ import { ProgresoModule } from './modules/progreso/progreso.module';
     BeneficiosModule,
 
     ProgresoModule,
+
+    EntrenadoresModule,
+
+    EjerciciosModule,
   ],
   providers: [PowerFitnessDbService],
   exports: [PowerFitnessDbService],

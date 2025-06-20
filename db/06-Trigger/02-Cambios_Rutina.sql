@@ -95,7 +95,7 @@ BEGIN
             SET @notificar_entrenador = 1;
         END
 
-        -- 2. VALIDACIONES DE NEGOCIO COMPLEJAS
+        -- 2. VALIDACIONES
 
         -- Validar que rutinas finalizadas no se reactiven sin autorización
         IF EXISTS (
@@ -114,9 +114,19 @@ BEGIN
 
         -- 3. GESTIÓN AUTOMÁTICA DE FECHAS
 
-        -- Establecer fecha_fin automáticamente cuando se cambia a estado "Finalizada"
+        -- Establecer fecha_fin automáticamente cuando se cambia a estado "Completada"
+        DECLARE @estado_rutina VARCHAR(15)
+
+        SELECT @estado_rutina = er.nombre FROM Estado_Rutina er WHERE er.id_estado_rutina = inserted.id_estado_rutina;
+
         UPDATE Rutina
-        SET fecha_fin = GETDATE()
+        SET fecha_fin = CASE
+            WHEN @estado_rutina = 'Completada' THEN GETDATE()
+            WHEN @estado_rutina = 'Cancelada' THEN GETDATE()
+            WHEN @estado_rutina = 'Activa' THEN NULL
+            WHEN @estado_rutina = 'Pausada' THEN NULL
+            ELSE fecha_fin
+        END
         FROM Rutina r
         INNER JOIN inserted i ON r.id_rutina = i.id_rutina
         INNER JOIN deleted d ON i.id_rutina = d.id_rutina
@@ -129,9 +139,6 @@ BEGIN
         -- Actualizar contadores de rutinas por entrenador (en un sistema real usaríamos tablas de métricas)
         IF @cambios_criticos = 1
         BEGIN
-            -- Aquí podríamos actualizar tablas de métricas o enviar notificaciones
-            -- Por simplicidad, solo registramos en el progreso del cliente
-
             DECLARE @total_cambios INT;
             SELECT @total_cambios = COUNT(*)
             FROM inserted i
@@ -139,7 +146,7 @@ BEGIN
             WHERE i.id_estado_rutina != d.id_estado_rutina
                 OR i.cedula_entrenador != d.cedula_entrenador;
 
-            PRINT 'Trigger auditoría completado. Cambios procesados: ' + CAST(@total_cambios AS VARCHAR);
+            PRINT 'Trigger completado. Cambios procesados: ' + CAST(@total_cambios AS VARCHAR);
         END
 
     END TRY

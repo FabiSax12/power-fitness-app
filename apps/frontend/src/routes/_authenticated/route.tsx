@@ -45,8 +45,8 @@ const navigationConfig: Record<UserType, Array<{ label: string; href: string; ic
     { label: 'Mis Clientes', href: '/dashboard/entrenador/clientes' },
     { label: 'Rutinas', href: '/dashboard/entrenador/rutinas' },
     { label: 'Clases', href: '/dashboard/entrenador/clases' },
-    { label: 'Progreso', href: '/dashboard/entrenador/progreso' },
-    { label: 'Reportes', href: '/dashboard/entrenador/reportes' },
+    // { label: 'Progreso', href: '/dashboard/entrenador/progreso' },
+    // { label: 'Reportes', href: '/dashboard/entrenador/reportes' },
   ],
   administrativo: [
     // { label: 'Dashboard', href: '/dashboard/admin' },

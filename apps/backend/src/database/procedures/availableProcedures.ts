@@ -9,11 +9,10 @@ export interface SP_Login {
 export interface SP_AgregarEjercicioRutina {
   name: 'sp_AgregarEjercicioRutina';
   params: {
-    idRutina: number;
-    idEjercicio: number;
-    series: number;
-    repeticiones: number;
-    descanso: number;
+    id_rutina: number;
+    nombre_ejercicio: string;
+    repeticiones?: number;
+    tiempo_descanso?: string; // Formato 'HH:mm:ss'
   };
 }
 
@@ -140,6 +139,48 @@ export interface SP_InsertarEmpleado {
   };
 }
 
+export interface SP_ConsultarEjercicios {
+  name: 'sp_ConsultarEjercicios';
+  params: undefined
+}
+
+export interface SP_ConsultarEjerciciosRutina {
+  name: 'sp_ConsultarEjerciciosRutina';
+  params: {
+    id_rutina: number;
+  };
+}
+
+export interface SP_EliminarEjercicioRutina {
+  name: 'sp_EliminarEjercicioRutina';
+  params: {
+    id_rutina: number;
+    id_ejercicio: number;
+  };
+}
+
+export interface SP_ActualizarRutina {
+  name: 'sp_ActualizarRutina';
+  params: {
+    id_rutina: number;
+    cedula_entrenador?: string;
+    tipo_rutina?: string;
+    estado_rutina?: string;
+    descripcion?: string;
+    dias?: string;
+    reemplazar_dias?: boolean;
+    forzar_reactivacion?: boolean;
+    motivo_cambio?: string;
+  };
+}
+
+export interface SP_EliminarRutina {
+  name: 'sp_EliminarRutina';
+  params: {
+    id_rutina: number;
+  };
+}
+
 export type Procedures =
   SP_Login
   | SP_AgregarEjercicioRutina
@@ -153,4 +194,9 @@ export type Procedures =
   | SP_ConsultarRutinas
   | SP_RegistrarProgreso
   | SP_ActualizarProgreso
-  | SP_InsertarEmpleado;
+  | SP_InsertarEmpleado
+  | SP_ConsultarEjercicios
+  | SP_ConsultarEjerciciosRutina
+  | SP_EliminarEjercicioRutina
+  | SP_ActualizarRutina
+  | SP_EliminarRutina;

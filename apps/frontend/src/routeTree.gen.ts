@@ -39,9 +39,7 @@ import { Route as AuthenticatedDashboardAdminGimnasioIndexImport } from './route
 import { Route as AuthenticatedDashboardAdminFinancieroIndexImport } from './routes/_authenticated/dashboard/admin/financiero/index'
 import { Route as AuthenticatedDashboardAdminEjerciciosIndexImport } from './routes/_authenticated/dashboard/admin/ejercicios/index'
 import { Route as AuthenticatedDashboardAdminConfiguracionIndexImport } from './routes/_authenticated/dashboard/admin/configuracion/index'
-import { Route as AuthenticatedDashboardEntrenadorRutinasPlantillasImport } from './routes/_authenticated/dashboard/entrenador/rutinas/plantillas'
 import { Route as AuthenticatedDashboardEntrenadorRutinasCrearImport } from './routes/_authenticated/dashboard/entrenador/rutinas/crear'
-import { Route as AuthenticatedDashboardEntrenadorRutinasIdImport } from './routes/_authenticated/dashboard/entrenador/rutinas/$id'
 import { Route as AuthenticatedDashboardEntrenadorReportesRendimientoImport } from './routes/_authenticated/dashboard/entrenador/reportes/rendimiento'
 import { Route as AuthenticatedDashboardEntrenadorReportesClientesImport } from './routes/_authenticated/dashboard/entrenador/reportes/clientes'
 import { Route as AuthenticatedDashboardEntrenadorProgresoCedulaImport } from './routes/_authenticated/dashboard/entrenador/progreso/$cedula'
@@ -77,6 +75,7 @@ import { Route as AuthenticatedDashboardAdminConfiguracionMetodosPagoImport } fr
 import { Route as AuthenticatedDashboardAdminConfiguracionCargosImport } from './routes/_authenticated/dashboard/admin/configuracion/cargos'
 import { Route as AuthenticatedDashboardAdminGimnasioMaquinasIndexImport } from './routes/_authenticated/dashboard/admin/gimnasio/maquinas/index'
 import { Route as AuthenticatedDashboardAdminGimnasioEquipamientoIndexImport } from './routes/_authenticated/dashboard/admin/gimnasio/equipamiento/index'
+import { Route as AuthenticatedDashboardEntrenadorRutinasIdEditarImport } from './routes/_authenticated/dashboard/entrenador/rutinas/$id.editar'
 import { Route as AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdImport } from './routes/_authenticated/dashboard/cliente/rutinas/ejercicios.$rutinaId'
 import { Route as AuthenticatedDashboardAdminGimnasioMaquinasCrearImport } from './routes/_authenticated/dashboard/admin/gimnasio/maquinas/crear'
 import { Route as AuthenticatedDashboardAdminGimnasioMaquinasIdImport } from './routes/_authenticated/dashboard/admin/gimnasio/maquinas/$id'
@@ -276,24 +275,10 @@ const AuthenticatedDashboardAdminConfiguracionIndexRoute =
     getParentRoute: () => AuthenticatedDashboardAdminRouteRoute,
   } as any)
 
-const AuthenticatedDashboardEntrenadorRutinasPlantillasRoute =
-  AuthenticatedDashboardEntrenadorRutinasPlantillasImport.update({
-    id: '/dashboard/entrenador/rutinas/plantillas',
-    path: '/dashboard/entrenador/rutinas/plantillas',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-
 const AuthenticatedDashboardEntrenadorRutinasCrearRoute =
   AuthenticatedDashboardEntrenadorRutinasCrearImport.update({
     id: '/dashboard/entrenador/rutinas/crear',
     path: '/dashboard/entrenador/rutinas/crear',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-
-const AuthenticatedDashboardEntrenadorRutinasIdRoute =
-  AuthenticatedDashboardEntrenadorRutinasIdImport.update({
-    id: '/dashboard/entrenador/rutinas/$id',
-    path: '/dashboard/entrenador/rutinas/$id',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
@@ -540,6 +525,13 @@ const AuthenticatedDashboardAdminGimnasioEquipamientoIndexRoute =
     id: '/gimnasio/equipamiento/',
     path: '/gimnasio/equipamiento/',
     getParentRoute: () => AuthenticatedDashboardAdminRouteRoute,
+  } as any)
+
+const AuthenticatedDashboardEntrenadorRutinasIdEditarRoute =
+  AuthenticatedDashboardEntrenadorRutinasIdEditarImport.update({
+    id: '/dashboard/entrenador/rutinas/$id/editar',
+    path: '/dashboard/entrenador/rutinas/$id/editar',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 const AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute =
@@ -889,25 +881,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardEntrenadorReportesRendimientoImport
       parentRoute: typeof AuthenticatedRouteImport
     }
-    '/_authenticated/dashboard/entrenador/rutinas/$id': {
-      id: '/_authenticated/dashboard/entrenador/rutinas/$id'
-      path: '/dashboard/entrenador/rutinas/$id'
-      fullPath: '/dashboard/entrenador/rutinas/$id'
-      preLoaderRoute: typeof AuthenticatedDashboardEntrenadorRutinasIdImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
     '/_authenticated/dashboard/entrenador/rutinas/crear': {
       id: '/_authenticated/dashboard/entrenador/rutinas/crear'
       path: '/dashboard/entrenador/rutinas/crear'
       fullPath: '/dashboard/entrenador/rutinas/crear'
       preLoaderRoute: typeof AuthenticatedDashboardEntrenadorRutinasCrearImport
-      parentRoute: typeof AuthenticatedRouteImport
-    }
-    '/_authenticated/dashboard/entrenador/rutinas/plantillas': {
-      id: '/_authenticated/dashboard/entrenador/rutinas/plantillas'
-      path: '/dashboard/entrenador/rutinas/plantillas'
-      fullPath: '/dashboard/entrenador/rutinas/plantillas'
-      preLoaderRoute: typeof AuthenticatedDashboardEntrenadorRutinasPlantillasImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/dashboard/admin/configuracion/': {
@@ -1064,6 +1042,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/dashboard/entrenador/rutinas/$id/editar': {
+      id: '/_authenticated/dashboard/entrenador/rutinas/$id/editar'
+      path: '/dashboard/entrenador/rutinas/$id/editar'
+      fullPath: '/dashboard/entrenador/rutinas/$id/editar'
+      preLoaderRoute: typeof AuthenticatedDashboardEntrenadorRutinasIdEditarImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/dashboard/admin/gimnasio/equipamiento/': {
       id: '/_authenticated/dashboard/admin/gimnasio/equipamiento/'
       path: '/gimnasio/equipamiento'
@@ -1215,9 +1200,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardEntrenadorProgresoCedulaRoute: typeof AuthenticatedDashboardEntrenadorProgresoCedulaRoute
   AuthenticatedDashboardEntrenadorReportesClientesRoute: typeof AuthenticatedDashboardEntrenadorReportesClientesRoute
   AuthenticatedDashboardEntrenadorReportesRendimientoRoute: typeof AuthenticatedDashboardEntrenadorReportesRendimientoRoute
-  AuthenticatedDashboardEntrenadorRutinasIdRoute: typeof AuthenticatedDashboardEntrenadorRutinasIdRoute
   AuthenticatedDashboardEntrenadorRutinasCrearRoute: typeof AuthenticatedDashboardEntrenadorRutinasCrearRoute
-  AuthenticatedDashboardEntrenadorRutinasPlantillasRoute: typeof AuthenticatedDashboardEntrenadorRutinasPlantillasRoute
   AuthenticatedDashboardClienteClasesIndexRoute: typeof AuthenticatedDashboardClienteClasesIndexRoute
   AuthenticatedDashboardClienteMembresiaIndexRoute: typeof AuthenticatedDashboardClienteMembresiaIndexRoute
   AuthenticatedDashboardClientePagosIndexRoute: typeof AuthenticatedDashboardClientePagosIndexRoute
@@ -1229,6 +1212,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardEntrenadorReportesIndexRoute: typeof AuthenticatedDashboardEntrenadorReportesIndexRoute
   AuthenticatedDashboardEntrenadorRutinasIndexRoute: typeof AuthenticatedDashboardEntrenadorRutinasIndexRoute
   AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute: typeof AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute
+  AuthenticatedDashboardEntrenadorRutinasIdEditarRoute: typeof AuthenticatedDashboardEntrenadorRutinasIdEditarRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1271,12 +1255,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedDashboardEntrenadorReportesClientesRoute,
   AuthenticatedDashboardEntrenadorReportesRendimientoRoute:
     AuthenticatedDashboardEntrenadorReportesRendimientoRoute,
-  AuthenticatedDashboardEntrenadorRutinasIdRoute:
-    AuthenticatedDashboardEntrenadorRutinasIdRoute,
   AuthenticatedDashboardEntrenadorRutinasCrearRoute:
     AuthenticatedDashboardEntrenadorRutinasCrearRoute,
-  AuthenticatedDashboardEntrenadorRutinasPlantillasRoute:
-    AuthenticatedDashboardEntrenadorRutinasPlantillasRoute,
   AuthenticatedDashboardClienteClasesIndexRoute:
     AuthenticatedDashboardClienteClasesIndexRoute,
   AuthenticatedDashboardClienteMembresiaIndexRoute:
@@ -1299,6 +1279,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedDashboardEntrenadorRutinasIndexRoute,
   AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute:
     AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute,
+  AuthenticatedDashboardEntrenadorRutinasIdEditarRoute:
+    AuthenticatedDashboardEntrenadorRutinasIdEditarRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -1349,9 +1331,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/entrenador/progreso/$cedula': typeof AuthenticatedDashboardEntrenadorProgresoCedulaRoute
   '/dashboard/entrenador/reportes/clientes': typeof AuthenticatedDashboardEntrenadorReportesClientesRoute
   '/dashboard/entrenador/reportes/rendimiento': typeof AuthenticatedDashboardEntrenadorReportesRendimientoRoute
-  '/dashboard/entrenador/rutinas/$id': typeof AuthenticatedDashboardEntrenadorRutinasIdRoute
   '/dashboard/entrenador/rutinas/crear': typeof AuthenticatedDashboardEntrenadorRutinasCrearRoute
-  '/dashboard/entrenador/rutinas/plantillas': typeof AuthenticatedDashboardEntrenadorRutinasPlantillasRoute
   '/dashboard/admin/configuracion': typeof AuthenticatedDashboardAdminConfiguracionIndexRoute
   '/dashboard/admin/ejercicios': typeof AuthenticatedDashboardAdminEjerciciosIndexRoute
   '/dashboard/admin/financiero': typeof AuthenticatedDashboardAdminFinancieroIndexRoute
@@ -1374,6 +1354,7 @@ export interface FileRoutesByFullPath {
   '/dashboard/admin/gimnasio/maquinas/$id': typeof AuthenticatedDashboardAdminGimnasioMaquinasIdRoute
   '/dashboard/admin/gimnasio/maquinas/crear': typeof AuthenticatedDashboardAdminGimnasioMaquinasCrearRoute
   '/dashboard/cliente/rutinas/ejercicios/$rutinaId': typeof AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute
+  '/dashboard/entrenador/rutinas/$id/editar': typeof AuthenticatedDashboardEntrenadorRutinasIdEditarRoute
   '/dashboard/admin/gimnasio/equipamiento': typeof AuthenticatedDashboardAdminGimnasioEquipamientoIndexRoute
   '/dashboard/admin/gimnasio/maquinas': typeof AuthenticatedDashboardAdminGimnasioMaquinasIndexRoute
 }
@@ -1422,9 +1403,7 @@ export interface FileRoutesByTo {
   '/dashboard/entrenador/progreso/$cedula': typeof AuthenticatedDashboardEntrenadorProgresoCedulaRoute
   '/dashboard/entrenador/reportes/clientes': typeof AuthenticatedDashboardEntrenadorReportesClientesRoute
   '/dashboard/entrenador/reportes/rendimiento': typeof AuthenticatedDashboardEntrenadorReportesRendimientoRoute
-  '/dashboard/entrenador/rutinas/$id': typeof AuthenticatedDashboardEntrenadorRutinasIdRoute
   '/dashboard/entrenador/rutinas/crear': typeof AuthenticatedDashboardEntrenadorRutinasCrearRoute
-  '/dashboard/entrenador/rutinas/plantillas': typeof AuthenticatedDashboardEntrenadorRutinasPlantillasRoute
   '/dashboard/admin/configuracion': typeof AuthenticatedDashboardAdminConfiguracionIndexRoute
   '/dashboard/admin/ejercicios': typeof AuthenticatedDashboardAdminEjerciciosIndexRoute
   '/dashboard/admin/financiero': typeof AuthenticatedDashboardAdminFinancieroIndexRoute
@@ -1447,6 +1426,7 @@ export interface FileRoutesByTo {
   '/dashboard/admin/gimnasio/maquinas/$id': typeof AuthenticatedDashboardAdminGimnasioMaquinasIdRoute
   '/dashboard/admin/gimnasio/maquinas/crear': typeof AuthenticatedDashboardAdminGimnasioMaquinasCrearRoute
   '/dashboard/cliente/rutinas/ejercicios/$rutinaId': typeof AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute
+  '/dashboard/entrenador/rutinas/$id/editar': typeof AuthenticatedDashboardEntrenadorRutinasIdEditarRoute
   '/dashboard/admin/gimnasio/equipamiento': typeof AuthenticatedDashboardAdminGimnasioEquipamientoIndexRoute
   '/dashboard/admin/gimnasio/maquinas': typeof AuthenticatedDashboardAdminGimnasioMaquinasIndexRoute
 }
@@ -1497,9 +1477,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/entrenador/progreso/$cedula': typeof AuthenticatedDashboardEntrenadorProgresoCedulaRoute
   '/_authenticated/dashboard/entrenador/reportes/clientes': typeof AuthenticatedDashboardEntrenadorReportesClientesRoute
   '/_authenticated/dashboard/entrenador/reportes/rendimiento': typeof AuthenticatedDashboardEntrenadorReportesRendimientoRoute
-  '/_authenticated/dashboard/entrenador/rutinas/$id': typeof AuthenticatedDashboardEntrenadorRutinasIdRoute
   '/_authenticated/dashboard/entrenador/rutinas/crear': typeof AuthenticatedDashboardEntrenadorRutinasCrearRoute
-  '/_authenticated/dashboard/entrenador/rutinas/plantillas': typeof AuthenticatedDashboardEntrenadorRutinasPlantillasRoute
   '/_authenticated/dashboard/admin/configuracion/': typeof AuthenticatedDashboardAdminConfiguracionIndexRoute
   '/_authenticated/dashboard/admin/ejercicios/': typeof AuthenticatedDashboardAdminEjerciciosIndexRoute
   '/_authenticated/dashboard/admin/financiero/': typeof AuthenticatedDashboardAdminFinancieroIndexRoute
@@ -1522,6 +1500,7 @@ export interface FileRoutesById {
   '/_authenticated/dashboard/admin/gimnasio/maquinas/$id': typeof AuthenticatedDashboardAdminGimnasioMaquinasIdRoute
   '/_authenticated/dashboard/admin/gimnasio/maquinas/crear': typeof AuthenticatedDashboardAdminGimnasioMaquinasCrearRoute
   '/_authenticated/dashboard/cliente/rutinas/ejercicios/$rutinaId': typeof AuthenticatedDashboardClienteRutinasEjerciciosRutinaIdRoute
+  '/_authenticated/dashboard/entrenador/rutinas/$id/editar': typeof AuthenticatedDashboardEntrenadorRutinasIdEditarRoute
   '/_authenticated/dashboard/admin/gimnasio/equipamiento/': typeof AuthenticatedDashboardAdminGimnasioEquipamientoIndexRoute
   '/_authenticated/dashboard/admin/gimnasio/maquinas/': typeof AuthenticatedDashboardAdminGimnasioMaquinasIndexRoute
 }
@@ -1573,9 +1552,7 @@ export interface FileRouteTypes {
     | '/dashboard/entrenador/progreso/$cedula'
     | '/dashboard/entrenador/reportes/clientes'
     | '/dashboard/entrenador/reportes/rendimiento'
-    | '/dashboard/entrenador/rutinas/$id'
     | '/dashboard/entrenador/rutinas/crear'
-    | '/dashboard/entrenador/rutinas/plantillas'
     | '/dashboard/admin/configuracion'
     | '/dashboard/admin/ejercicios'
     | '/dashboard/admin/financiero'
@@ -1598,6 +1575,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/gimnasio/maquinas/$id'
     | '/dashboard/admin/gimnasio/maquinas/crear'
     | '/dashboard/cliente/rutinas/ejercicios/$rutinaId'
+    | '/dashboard/entrenador/rutinas/$id/editar'
     | '/dashboard/admin/gimnasio/equipamiento'
     | '/dashboard/admin/gimnasio/maquinas'
   fileRoutesByTo: FileRoutesByTo
@@ -1645,9 +1623,7 @@ export interface FileRouteTypes {
     | '/dashboard/entrenador/progreso/$cedula'
     | '/dashboard/entrenador/reportes/clientes'
     | '/dashboard/entrenador/reportes/rendimiento'
-    | '/dashboard/entrenador/rutinas/$id'
     | '/dashboard/entrenador/rutinas/crear'
-    | '/dashboard/entrenador/rutinas/plantillas'
     | '/dashboard/admin/configuracion'
     | '/dashboard/admin/ejercicios'
     | '/dashboard/admin/financiero'
@@ -1670,6 +1646,7 @@ export interface FileRouteTypes {
     | '/dashboard/admin/gimnasio/maquinas/$id'
     | '/dashboard/admin/gimnasio/maquinas/crear'
     | '/dashboard/cliente/rutinas/ejercicios/$rutinaId'
+    | '/dashboard/entrenador/rutinas/$id/editar'
     | '/dashboard/admin/gimnasio/equipamiento'
     | '/dashboard/admin/gimnasio/maquinas'
   id:
@@ -1718,9 +1695,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/entrenador/progreso/$cedula'
     | '/_authenticated/dashboard/entrenador/reportes/clientes'
     | '/_authenticated/dashboard/entrenador/reportes/rendimiento'
-    | '/_authenticated/dashboard/entrenador/rutinas/$id'
     | '/_authenticated/dashboard/entrenador/rutinas/crear'
-    | '/_authenticated/dashboard/entrenador/rutinas/plantillas'
     | '/_authenticated/dashboard/admin/configuracion/'
     | '/_authenticated/dashboard/admin/ejercicios/'
     | '/_authenticated/dashboard/admin/financiero/'
@@ -1743,6 +1718,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard/admin/gimnasio/maquinas/$id'
     | '/_authenticated/dashboard/admin/gimnasio/maquinas/crear'
     | '/_authenticated/dashboard/cliente/rutinas/ejercicios/$rutinaId'
+    | '/_authenticated/dashboard/entrenador/rutinas/$id/editar'
     | '/_authenticated/dashboard/admin/gimnasio/equipamiento/'
     | '/_authenticated/dashboard/admin/gimnasio/maquinas/'
   fileRoutesById: FileRoutesById
@@ -1804,9 +1780,7 @@ export const routeTree = rootRoute
         "/_authenticated/dashboard/entrenador/progreso/$cedula",
         "/_authenticated/dashboard/entrenador/reportes/clientes",
         "/_authenticated/dashboard/entrenador/reportes/rendimiento",
-        "/_authenticated/dashboard/entrenador/rutinas/$id",
         "/_authenticated/dashboard/entrenador/rutinas/crear",
-        "/_authenticated/dashboard/entrenador/rutinas/plantillas",
         "/_authenticated/dashboard/cliente/clases/",
         "/_authenticated/dashboard/cliente/membresia/",
         "/_authenticated/dashboard/cliente/pagos/",
@@ -1817,7 +1791,8 @@ export const routeTree = rootRoute
         "/_authenticated/dashboard/entrenador/progreso/",
         "/_authenticated/dashboard/entrenador/reportes/",
         "/_authenticated/dashboard/entrenador/rutinas/",
-        "/_authenticated/dashboard/cliente/rutinas/ejercicios/$rutinaId"
+        "/_authenticated/dashboard/cliente/rutinas/ejercicios/$rutinaId",
+        "/_authenticated/dashboard/entrenador/rutinas/$id/editar"
       ]
     },
     "/auth/login": {
@@ -2021,16 +1996,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/dashboard/entrenador/reportes/rendimiento.tsx",
       "parent": "/_authenticated"
     },
-    "/_authenticated/dashboard/entrenador/rutinas/$id": {
-      "filePath": "_authenticated/dashboard/entrenador/rutinas/$id.tsx",
-      "parent": "/_authenticated"
-    },
     "/_authenticated/dashboard/entrenador/rutinas/crear": {
       "filePath": "_authenticated/dashboard/entrenador/rutinas/crear.tsx",
-      "parent": "/_authenticated"
-    },
-    "/_authenticated/dashboard/entrenador/rutinas/plantillas": {
-      "filePath": "_authenticated/dashboard/entrenador/rutinas/plantillas.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/dashboard/admin/configuracion/": {
@@ -2119,6 +2086,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/dashboard/cliente/rutinas/ejercicios/$rutinaId": {
       "filePath": "_authenticated/dashboard/cliente/rutinas/ejercicios.$rutinaId.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/dashboard/entrenador/rutinas/$id/editar": {
+      "filePath": "_authenticated/dashboard/entrenador/rutinas/$id.editar.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/dashboard/admin/gimnasio/equipamiento/": {

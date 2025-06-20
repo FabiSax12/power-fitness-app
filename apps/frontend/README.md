@@ -27,10 +27,10 @@
 - [x] Update
 - [x] Delete
 ## 4. Rutinas (Vista Entrenador)
-- [] Create
-- [] Read
-- [] Update
-- [] Delete
+- [x] Create
+- [x] Read
+- [x] Update
+- [x] Delete
 ## 5. Clases (Vista Entrenador)
 - [] Create
 - [] Read

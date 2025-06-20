@@ -95,8 +95,7 @@ CREATE PROCEDURE sp_AgregarEjercicioRutina
     @id_rutina INT,
     @nombre_ejercicio VARCHAR(25),
     @repeticiones INT = 1,
-    @tiempo_descanso TIME = NULL,
-    @dificultad VARCHAR(20) = 'Intermedio'
+    @tiempo_descanso TIME = NULL
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -114,20 +113,11 @@ BEGIN
             RETURN;
         END
 
-        -- Buscar o crear dificultad
-        SELECT @id_dificultad = id_dificultad FROM Dificultad WHERE dificultad = @dificultad;
-        IF @id_dificultad IS NULL
-        BEGIN
-            INSERT INTO Dificultad (dificultad) VALUES (@dificultad);
-            SET @id_dificultad = SCOPE_IDENTITY();
-        END
-
         -- Buscar o crear ejercicio
         SELECT @id_ejercicio = id_ejercicio FROM Ejercicio WHERE nombre = @nombre_ejercicio;
         IF @id_ejercicio IS NULL
         BEGIN
-            INSERT INTO Ejercicio (nombre, id_dificultad) VALUES (@nombre_ejercicio, @id_dificultad);
-            SET @id_ejercicio = SCOPE_IDENTITY();
+            RAISERROR('El ejercicio no existe.', 16, 1);
         END
 
         -- Agregar ejercicio a rutina
@@ -144,7 +134,8 @@ BEGIN
         RAISERROR(@ErrorMessage, 16, 1);
     END CATCH
 END;
-GO
+go
+
 
 -- Consultar rutinas completas
 CREATE PROCEDURE sp_ConsultarRutinas
