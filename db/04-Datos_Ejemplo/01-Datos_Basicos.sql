@@ -32,16 +32,16 @@ INSERT INTO Permiso (permiso) VALUES
 
 -- Especialidades de Entrenadores
 INSERT INTO Especialidad (nombre) VALUES
-('Musculación'),
-('Funcional'),
+('Gimnasio'),
 ('CrossFit'),
-('JiuJitsu'),
+('Jiujitsu'),
 ('Zumba');
 
 -- Instituciones de Certificación
 INSERT INTO Institucion (nombre) VALUES
 ('Universidad de Costa Rica'),
-('Colegio de Profesionales en Ciencias del Deporte');
+('Colegio de Profesionales en Ciencias del Deporte'),
+('Instituto Nacional de Aprendizaje');
 
 -- Certificaciones
 INSERT INTO Certificacion (nombre, id_institucion, fecha_obtencion) VALUES

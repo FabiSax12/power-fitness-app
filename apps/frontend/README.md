@@ -7,8 +7,8 @@
 - Email: alejandro.quesada@headtrainer.com
 - Password: AlejandroHT789
 ## Cliente
-- Email: 
-- Password: 
+- Email: f.vargas.1@estudiantec.cr
+- Password: GymPW12*
 
 # 5 Cruds
 ## 1. Progreso Cliente (Vista Cliente)
